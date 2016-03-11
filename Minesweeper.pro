@@ -14,9 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    cell.cpp
+    cell.cpp \
+    minefield.cpp
 
 HEADERS  += mainwindow.h \
-    cell.h
+    cell.h \
+    minefield.h
 
 FORMS    += mainwindow.ui

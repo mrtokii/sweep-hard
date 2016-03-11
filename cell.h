@@ -1,12 +1,11 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <QObject>
 #include <QPixmap>
+#include <QPainter>
 
-class Cell : public QObject
+class Cell
 {
-    Q_OBJECT
 
     /*
      * opened?
@@ -19,7 +18,7 @@ class Cell : public QObject
     int m_contents;
 
 public:
-    explicit Cell(QObject *parent = 0);
+    explicit Cell();
 
     bool state();
     bool isBomb();
