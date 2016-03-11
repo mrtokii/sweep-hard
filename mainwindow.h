@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
+
+#include "minefield.h"
 
 namespace Ui {
 class MainWindow;
@@ -15,8 +18,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void setField(MineField *field) { m_field = field; }
+
+private slots:
+    void on_generateField_clicked();
+
 private:
     Ui::MainWindow *ui;
+    MineField *m_field;
 };
 
 #endif // MAINWINDOW_H

@@ -10,7 +10,7 @@ class Cell
     /*
      * opened?
     */
-    bool m_state;
+    bool m_opened;
 
     /*
      * 0 - empty, 9 - bomb
@@ -20,10 +20,14 @@ class Cell
 public:
     explicit Cell();
 
-    bool state();
-    bool isBomb();
+    bool opened() { return this->m_opened; }
+    bool isBomb() { return this->m_contents == 9; }
+    int contents() { return this->m_contents; }
 
-    QPixmap open();
+    void open() { this->m_opened = true; }
+    void increment() { this->m_contents++; }
+
+    QPixmap draw();
 
     void setContents(int c);
 

@@ -2,36 +2,35 @@
 
 Cell::Cell()
 {
-    this->m_state = false;
+    this->m_opened = true;
     this->m_contents = 0;
 }
 
-bool Cell::state()
-{
-    return this->m_state;
-}
-
-bool Cell::isBomb()
-{
-    return this->m_contents == 9;
-}
-
-QPixmap Cell::open()
+QPixmap Cell::draw()
 {   
     QPixmap pic(50, 50);
     QPainter painter(&pic);
 
-    //painter.setBrush(QBrush(Qt::blue, Qt::CrossPattern));
+    if(m_opened) { // Рисуем открытую клетку
+        painter.fillRect(0, 0, 50, 50, Qt::red);
 
-    painter.fillRect(0, 0, 50, 50, Qt::white);
-    painter.fillRect(2, 2, 48, 48, Qt::blue);
+        if(!this->isBomb()) {
+            painter.fillRect(1, 1, 48, 48, Qt::blue);
 
-    painter.setPen(Qt::white);
+            painter.setPen(Qt::white);
 
-    QFont font = painter.font() ;
-    font.setPointSize(10);
-    painter.setFont(font);
-    painter.drawText(QPoint(5, 20), QString::number(this->m_contents));
+            QFont font = painter.font() ;
+            font.setPointSize(10);
+            painter.setFont(font);
+            painter.drawText(QPoint(5, 20), QString::number(this->m_contents));
+        }
+
+
+    } else { // Рисуем закрытую клетку
+        painter.fillRect(0, 0, 50, 50, Qt::red);
+        painter.fillRect(1, 1, 48, 48, Qt::black);
+    }
+
 
     return pic;
 }

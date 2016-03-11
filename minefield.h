@@ -19,8 +19,13 @@ class MineField : public QWidget
     int h;
 
 
+    void countNumbers();
+    void placeBombs(int amount);
+
 public:
     explicit MineField(QWidget *parent = 0);
+
+    void generateField(int height, int width, int bombs);
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;
