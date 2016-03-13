@@ -15,8 +15,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_generateField_clicked()
 {
-    if(ui->spinBoxBombs->value() <= ui->spinBoxHeight->value() * ui->spinBoxWidth->value()) {
-        m_field->generateField(ui->spinBoxHeight->value(), ui->spinBoxWidth->value(), ui->spinBoxBombs->value());
+    if(ui->spinBoxBombs->value() < ui->spinBoxHeight->value() * ui->spinBoxWidth->value()) {
+        m_field->setProperties(ui->spinBoxHeight->value(), ui->spinBoxWidth->value(), ui->spinBoxBombs->value());
     } else {
         QMessageBox msgBox;
         msgBox.setText("Too many bombs for this field!");

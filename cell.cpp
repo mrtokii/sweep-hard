@@ -2,7 +2,7 @@
 
 Cell::Cell()
 {
-    this->m_opened = true;
+    this->m_opened = false;
     this->m_contents = 0;
 }
 

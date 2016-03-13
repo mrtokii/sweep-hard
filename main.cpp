@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 
 
     MineField mf;
+    mf.setProperties(8, 9, 15);
     w.setField(&mf);
 
     mf.show();

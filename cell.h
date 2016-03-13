@@ -22,6 +22,7 @@ public:
 
     bool opened() { return this->m_opened; }
     bool isBomb() { return this->m_contents == 9; }
+    bool empty() { return this->m_contents == 0; }
     int contents() { return this->m_contents; }
 
     void open() { this->m_opened = true; }

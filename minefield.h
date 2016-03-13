@@ -17,15 +17,21 @@ class MineField : public QWidget
 
     int w;
     int h;
+    int m_bombs;
 
+    bool m_gameStarted;
 
     void countNumbers();
-    void placeBombs(int amount);
+    void placeBombs(int amount, int startX, int startY);
+    void createField();
+    void openCell(int x, int y);
+    bool empty(int x, int y);
 
 public:
     explicit MineField(QWidget *parent = 0);
 
-    void generateField(int height, int width, int bombs);
+    void generateField(int startX, int startY);
+    void setProperties(int height, int width, int bombs);
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;
