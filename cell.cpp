@@ -4,12 +4,21 @@ Cell::Cell()
 {
     this->m_opened = false;
     this->m_contents = 0;
+
+    mark(false);
 }
 
 QPixmap Cell::draw()
 {   
     QPixmap pic(50, 50);
     QPainter painter(&pic);
+
+    if(m_marked) {
+        painter.fillRect(0, 0, 50, 50, Qt::red);
+        painter.fillRect(1, 1, 48, 48, Qt::green);
+
+        return pic;
+    }
 
     if(m_opened) { // Рисуем открытую клетку
         painter.fillRect(0, 0, 50, 50, Qt::red);

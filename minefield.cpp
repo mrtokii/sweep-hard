@@ -159,12 +159,12 @@ void MineField::mousePressEvent(QMouseEvent *event)
     if(event->pos().x() > w*50-1 || event->pos().y() > h*50-1)
         return;
 
+    QPoint newCoords;
+    newCoords.setX(event->pos().x() / 50);
+    newCoords.setY(event->pos().y() / 50);
+    qDebug() << "FieldClick: " << newCoords.x() << " " << newCoords.y();
 
-    if (event->button() == Qt::LeftButton) {
-        QPoint newCoords;
-        newCoords.setX(event->pos().x() / 50);
-        newCoords.setY(event->pos().y() / 50);
-        qDebug() << "FieldClick: " << newCoords.x() << " " << newCoords.y();
+    if (event->button() == Qt::LeftButton && !m_field[newCoords.y()][newCoords.x()].marked()) {
 
         if(!m_gameStarted) {
             generateField(newCoords.x(), newCoords.y());
@@ -178,6 +178,10 @@ void MineField::mousePressEvent(QMouseEvent *event)
             msgBox.exec();
         } else {
             openCell(newCoords.x(), newCoords.y());
+        }
+    } else if(event->button() == Qt::RightButton) {
+        if(!m_field[newCoords.y()][newCoords.x()].opened()) {
+            m_field[newCoords.y()][newCoords.x()].mark(!m_field[newCoords.y()][newCoords.x()].marked());
         }
     }
 
