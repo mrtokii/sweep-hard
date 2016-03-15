@@ -184,6 +184,11 @@ void MineField::setCellSize(int s)
     m_cellSize = s;
 }
 
+void MineField::showBombs()
+{
+
+}
+
 void MineField::paintEvent(QPaintEvent *e) {
     QPainter painter(this);
 

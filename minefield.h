@@ -36,6 +36,7 @@ public:
     void generateField(int startX, int startY);
     void setProperties(int height, int width, int bombs);
     void setCellSize(int s);
+    void showBombs();
 
     int fullWidth() { return m_width * m_cellSize; }
     int fullHeight() { return m_height * m_cellSize; }

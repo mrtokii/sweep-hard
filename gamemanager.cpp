@@ -1,9 +1,19 @@
 #include "gamemanager.h"
 #include <QMessageBox>
+#include <QTime>
+#include <QTimer>
+#include <QDebug>
 
 GameManager::GameManager(QObject *parent) : QObject(parent)
 {
     m_gameField = NULL;
+    m_startTime = QTime::currentTime();
+    m_timer = new QTimer(this);
+}
+
+GameManager::~GameManager()
+{
+    delete m_timer;
 }
 
 void GameManager::connectField(MineField *f)
@@ -14,10 +24,22 @@ void GameManager::connectField(MineField *f)
     QObject::connect(m_gameField, SIGNAL(gameFailed()), this, SLOT(gameFailed()));
 }
 
+void GameManager::connectTimer(QLabel *t)
+{
+    m_timerPanel = t;
+}
+
+void GameManager::connectInfoPanel(QLabel *p)
+{
+    m_infoPanel = p;
+}
+
 void GameManager::newGame(int level)
 {
     if(m_gameField == NULL)
         return;
+
+    m_gameLevel = level;
 
     switch(level) {
         case easy:
@@ -39,6 +61,7 @@ void GameManager::newGame(int w, int h, int bombs)
     if(m_gameField == NULL)
         return;
 
+    m_gameLevel = custom;
     m_gameField->setProperties(h, w, bombs);
 }
 
@@ -46,7 +69,12 @@ void GameManager::cellOpened(int all)
 {
     int fieldSize = m_gameField->width() * m_gameField->height();
 
+    // Игра закончилась победой
     if(fieldSize - all == m_gameField->bombs()) {
+        m_timer->stop();
+        m_gameTime = gameTime();
+        m_timerPanel->setText("WON " + m_gameTime.toString());
+
         QMessageBox msgBox;
         msgBox.setText("U WON");
         msgBox.exec();
@@ -55,13 +83,32 @@ void GameManager::cellOpened(int all)
 
 void GameManager::gameStarted()
 {
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
+    m_startTime.start();
+    m_timer->start(1000);
+    updateTimer();
 
 }
 
 void GameManager::gameFailed()
 {
+    m_timer->stop();
     QMessageBox msgBox;
     msgBox.setText("U FAILED");
     msgBox.exec();
 }
 
+void GameManager::updateTimer()
+{
+    qDebug() << gameTime().toString("mm:ss");
+    m_timerPanel->setText(gameTime().toString("mm:ss"));
+}
+
+QTime GameManager::gameTime()
+{
+    int ms = m_startTime.elapsed();
+    int s  = ms / 1000;    ms %= 1000;
+    int m  = s  / 60;      s  %= 60;
+    int h  = m  / 60;      m  %= 60;
+    return QTime(h, m, s, ms);
+}
