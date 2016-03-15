@@ -4,8 +4,6 @@ Cell::Cell()
 {
     this->m_state = cellNotOpened;
     this->m_contents = 0;
-
-    //mark(false);
 }
 
 QPixmap Cell::draw()
@@ -30,7 +28,7 @@ QPixmap Cell::draw()
                 QFont font = painter.font() ;
                 font.setPointSize(10);
                 painter.setFont(font);
-                painter.drawText(QPoint(5, 20), QString::number(this->m_contents));
+                painter.drawText(QPoint(21, 28), QString::number(this->m_contents));
             }
         break;
 

@@ -8,6 +8,7 @@
 class Cell
 {
 
+protected:
     /*
      * 0 - not opened
      * 1 - marked
@@ -23,6 +24,7 @@ class Cell
 
 public:
     explicit Cell();
+    explicit Cell(int size);
 
     bool opened() { return this->m_state == cellOpened; }
     bool isBomb() { return this->m_contents == 9; }

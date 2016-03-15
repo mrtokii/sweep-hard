@@ -13,13 +13,14 @@ class MineField : public QWidget
 {
     Q_OBJECT
 
+private:
     QVector< QVector< Cell > > m_field;
 
     int m_width;
     int m_height;
     int m_bombs;
+    int m_cellSize;
 
-    //bool m_gameStarted;
     int m_openedCells;
 
     void countNumbers();
@@ -34,6 +35,10 @@ public:
 
     void generateField(int startX, int startY);
     void setProperties(int height, int width, int bombs);
+    void setCellSize(int s);
+
+    int fullWidth() { return m_width * m_cellSize; }
+    int fullHeight() { return m_height * m_cellSize; }
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;

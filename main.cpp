@@ -9,11 +9,11 @@ int main(int argc, char *argv[])
     w.show();
 
 
-    MineField mf;
-    mf.setProperties(8, 9, 15);
-    w.setField(&mf);
+    MineField* mf = new MineField();
+    mf->setProperties(8, 9, 15);
+    w.setField(mf);
 
-    mf.show();
+    mf->show();
 
     return a.exec();
 }

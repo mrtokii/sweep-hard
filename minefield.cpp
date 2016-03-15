@@ -158,6 +158,7 @@ MineField::MineField(QWidget *parent) : QWidget(parent)
     m_width = 1;
     m_bombs = 1;
 
+    setCellSize(50);
     setProperties(9, 9, 10);
 }
 
@@ -178,24 +179,29 @@ void MineField::setProperties(int height, int width, int bombs)
     }
 }
 
+void MineField::setCellSize(int s)
+{
+    m_cellSize = s;
+}
+
 void MineField::paintEvent(QPaintEvent *e) {
     QPainter painter(this);
 
     for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {
-            painter.drawPixmap(j*50, i*50, 50, 50, m_field[i][j].draw());
+            painter.drawPixmap(j * m_cellSize, i * m_cellSize, m_cellSize, m_cellSize, m_field[i][j].draw());
         }
     }
 }
 
 void MineField::mousePressEvent(QMouseEvent *event)
 {
-    if(event->pos().x() > m_width*50-1 || event->pos().y() > m_height*50-1)
+    if(event->pos().x() > m_width*m_cellSize-1 || event->pos().y() > m_height*m_cellSize-1)
         return;
 
     QPoint newCoords;
-    newCoords.setX(event->pos().x() / 50);
-    newCoords.setY(event->pos().y() / 50);
+    newCoords.setX(event->pos().x() / m_cellSize);
+    newCoords.setY(event->pos().y() / m_cellSize);
     qDebug() << "FieldClick: " << newCoords.x() << " " << newCoords.y();
 
     if (event->button() == Qt::LeftButton && !m_field[newCoords.y()][newCoords.x()].marked()) {
