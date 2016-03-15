@@ -13,6 +13,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setField(MineField *field) {
+    m_field = field;
+    QObject::connect(m_field, SIGNAL(cellOpened(int)), this->ui->spinBoxBombs, SLOT(setValue(int)));
+}
+
 void MainWindow::on_generateField_clicked()
 {
     if(ui->spinBoxBombs->value() < ui->spinBoxHeight->value() * ui->spinBoxWidth->value()) {

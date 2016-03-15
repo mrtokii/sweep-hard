@@ -1,43 +1,57 @@
 #include "minefield.h"
 #include <QtDebug>
 #include <QMessageBox>
+#include <QTime>
 
 void MineField::placeBombs(int amount, int startX, int startY)
 {
     qDebug() << "AMOUNT: " << amount;
     qDebug() << "START: " << startX << " " << startY;
 
-    for(int i = 0; i < amount;) {
-        int randomH = rand()%h;       
-        int randomW = rand()%w;
+    QTime midnight(0,0,0);
+    qsrand(midnight.secsTo(QTime::currentTime()));
 
-        if(!m_field[randomH][randomW].isBomb() && !(randomH == startY && randomW == startX)) {
-            m_field[randomH][randomW].setContents(9);
-            qDebug() << "RAND FOUND: " << randomW << " " << randomH;
+    for(int i = 0; i < amount;) {
+
+
+        int randomY = qrand() % m_height;
+        int randomX = qrand() % m_width;
+
+
+        // Для открытия только нулевых клеток
+        bool bombAround = randomX >= startX-1 && randomX <= startX+1
+                && randomY >= startY-1 && randomY <= startY+1;
+
+        if(!bombAround && !(randomY == startY && randomX == startX))
+        {
+            m_field[randomY][randomX].setContents(9);
             i++;
         }
 
-        update();
     }
 }
 
 void MineField::createField()
 {
-    m_field = QVector< QVector< Cell > >(h);
+    m_field = QVector< QVector< Cell > >(m_height);
 
-    for(int i = 0; i < h; i++) {
-        m_field[i] = QVector< Cell >(w);
+    for(int i = 0; i < m_height; i++) {
+        m_field[i] = QVector< Cell >(m_width);
     }
 
-    m_gameStarted = false;
+    m_openedCells = 0;
     update();
 }
 
 void MineField::openCell(int x, int y)
 {
-    if(x >= 0 && x < w && y >= 0 && y < h) {
-        if(!m_field[y][x].opened() && !m_field[y][x].isBomb()) {
-            m_field[y][x].open();
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
+        Cell &current = m_field[y][x];
+
+        if(!current.opened() && !current.isBomb()) {
+
+            current.open();
+            emit cellOpened(++m_openedCells);
 
             if(empty(x, y)) { // Если ячейка пуская, открываем все соседние клетки
                 openCell(x - 1, y - 1);
@@ -79,8 +93,20 @@ void MineField::openCell(int x, int y)
 
 bool MineField::empty(int x, int y)
 {
-    if(x >= 0 && x < w && y >= 0 && y < h) {
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
         if(m_field[y][x].empty())
+            return true;
+        else
+            return false;
+    }
+
+    return false;
+}
+
+bool MineField::bomb(int x, int y)
+{
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
+        if(m_field[y][x].isBomb())
             return true;
         else
             return false;
@@ -91,25 +117,32 @@ bool MineField::empty(int x, int y)
 
 void MineField::countNumbers()
 {
-    for(int i = 0; i < h; i++) {
-        for(int j = 0; j < w; j++) {
+    for(int i = 0; i < m_height; i++) {
+        for(int j = 0; j < m_width; j++) {
 
             if(!m_field[i][j].isBomb()) {
                 if(i > 0 && j > 0 && m_field[i-1][j-1].isBomb()) // 7
                     m_field[i][j].increment();
+
                 if(i > 0 && m_field[i-1][j].isBomb()) // 8
                     m_field[i][j].increment();
-                if(i > 0 && j < w-1 && m_field[i-1][j+1].isBomb()) // 9
+
+                if(i > 0 && j < m_width-1 && m_field[i-1][j+1].isBomb()) // 9
                     m_field[i][j].increment();
+
                 if(j > 0 && m_field[i][j-1].isBomb()) // 4
                     m_field[i][j].increment();
-                if(j < w-1 && m_field[i][j+1].isBomb()) // 6
+
+                if(j < m_width-1 && m_field[i][j+1].isBomb()) // 6
                     m_field[i][j].increment();
-                if(i < h-1 && j > 0 && m_field[i+1][j-1].isBomb()) // 1
+
+                if(i < m_height-1 && j > 0 && m_field[i+1][j-1].isBomb()) // 1
                     m_field[i][j].increment();
-                if(i < h-1 && m_field[i+1][j].isBomb()) // 2
+
+                if(i < m_height-1 && m_field[i+1][j].isBomb()) // 2
                     m_field[i][j].increment();
-                if(i < h-1 && j < w-1 && m_field[i+1][j+1].isBomb()) // 3
+
+                if(i < m_height-1 && j < m_width-1 && m_field[i+1][j+1].isBomb()) // 3
                     m_field[i][j].increment();
 
             }
@@ -120,24 +153,25 @@ void MineField::countNumbers()
 
 MineField::MineField(QWidget *parent) : QWidget(parent)
 {
-    m_gameStarted = false;
-    h = 1;
-    w = 1;
+    m_openedCells = 0;
+    m_height = 1;
+    m_width = 1;
     m_bombs = 1;
+
+    setProperties(9, 9, 10);
 }
 
 void MineField::generateField(int startX, int startY)
 {   
     placeBombs(m_bombs, startX, startY);
     countNumbers();
-    update();
 }
 
 void MineField::setProperties(int height, int width, int bombs)
 {
-    if(bombs < width * height) {
-        w = width;
-        h = height;
+    if(bombs < width * height - 8) {
+        m_width = width;
+        m_height = height;
         m_bombs = bombs;
 
         createField();
@@ -147,8 +181,8 @@ void MineField::setProperties(int height, int width, int bombs)
 void MineField::paintEvent(QPaintEvent *e) {
     QPainter painter(this);
 
-    for(int i = 0; i < h; i++) {
-        for(int j = 0; j < w; j++) {
+    for(int i = 0; i < m_height; i++) {
+        for(int j = 0; j < m_width; j++) {
             painter.drawPixmap(j*50, i*50, 50, 50, m_field[i][j].draw());
         }
     }
@@ -156,7 +190,7 @@ void MineField::paintEvent(QPaintEvent *e) {
 
 void MineField::mousePressEvent(QMouseEvent *event)
 {
-    if(event->pos().x() > w*50-1 || event->pos().y() > h*50-1)
+    if(event->pos().x() > m_width*50-1 || event->pos().y() > m_height*50-1)
         return;
 
     QPoint newCoords;
@@ -166,9 +200,8 @@ void MineField::mousePressEvent(QMouseEvent *event)
 
     if (event->button() == Qt::LeftButton && !m_field[newCoords.y()][newCoords.x()].marked()) {
 
-        if(!m_gameStarted) {
+        if(!m_openedCells) {
             generateField(newCoords.x(), newCoords.y());
-            m_gameStarted = true;
         }
 
 

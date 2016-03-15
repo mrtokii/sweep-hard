@@ -15,17 +15,19 @@ class MineField : public QWidget
 
     QVector< QVector< Cell > > m_field;
 
-    int w;
-    int h;
+    int m_width;
+    int m_height;
     int m_bombs;
 
-    bool m_gameStarted;
+    //bool m_gameStarted;
+    int m_openedCells;
 
     void countNumbers();
     void placeBombs(int amount, int startX, int startY);
     void createField();
     void openCell(int x, int y);
     bool empty(int x, int y);
+    bool bomb(int x, int y);
 
 public:
     explicit MineField(QWidget *parent = 0);
@@ -38,6 +40,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 signals:
+    void cellOpened(int all);
 
 public slots:
 };

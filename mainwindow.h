@@ -18,7 +18,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void setField(MineField *field) { m_field = field; }
+    void setField(MineField *field);
 
 private slots:
     void on_generateField_clicked();
