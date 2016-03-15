@@ -206,15 +206,14 @@ void MineField::mousePressEvent(QMouseEvent *event)
 
     if (event->button() == Qt::LeftButton && !m_field[newCoords.y()][newCoords.x()].marked()) {
 
-        if(!m_openedCells) {
+        if(!m_openedCells) { // Начало игры
             generateField(newCoords.x(), newCoords.y());
+            emit gameStarted();
         }
 
 
         if(m_field[newCoords.y()][newCoords.x()].isBomb()) {
-            QMessageBox msgBox;
-            msgBox.setText("ITS A TRAP");
-            msgBox.exec();
+            emit gameFailed();
         } else {
             openCell(newCoords.x(), newCoords.y());
         }

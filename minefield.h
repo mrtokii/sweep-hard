@@ -40,12 +40,18 @@ public:
     int fullWidth() { return m_width * m_cellSize; }
     int fullHeight() { return m_height * m_cellSize; }
 
+    int bombs() { return m_bombs; }
+    int width() { return m_width; }
+    int height() { return m_height; }
+
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 signals:
     void cellOpened(int all);
+    void gameStarted();
+    void gameFailed();
 
 public slots:
 };

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "minefield.h"
+#include "gamemanager.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -9,9 +10,14 @@ int main(int argc, char *argv[])
     w.show();
 
 
+
     MineField* mf = new MineField();
-    mf->setProperties(8, 9, 15);
+    GameManager *gm = new GameManager();
+    gm->connectField(mf);
+
     w.setField(mf);
+
+    gm->newGame(GameManager::easy);
 
     mf->show();
 
