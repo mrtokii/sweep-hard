@@ -3,15 +3,18 @@
 
 #include <QPixmap>
 #include <QPainter>
+#include <QDebug>
 
 class Cell
 {
 
     /*
-     * opened?
+     * 0 - not opened
+     * 1 - marked
+     * 2 - opened
     */
-    bool m_opened;
-    bool m_marked;
+    int m_state;
+    enum { cellNotOpened, cellMarked, cellOpened };
 
     /*
      * 0 - empty, 9 - bomb
@@ -21,16 +24,16 @@ class Cell
 public:
     explicit Cell();
 
-    bool opened() { return this->m_opened; }
+    bool opened() { return this->m_state == cellOpened; }
     bool isBomb() { return this->m_contents == 9; }
     bool empty() { return this->m_contents == 0; }
-    bool marked() { return this->m_marked; }
+    bool marked() { return this->m_state == cellMarked; }
 
     int contents() { return this->m_contents; }
 
-    void open() { this->m_opened = true; }
+    void open() { this->m_state = cellOpened; }
     void increment() { this->m_contents++; }
-    void mark(bool state) { this->m_marked = state; }
+    void mark(bool state) { this->m_state = state ? cellMarked : cellNotOpened; }
 
     QPixmap draw();
 
