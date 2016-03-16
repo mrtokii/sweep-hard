@@ -73,6 +73,7 @@ void GameManager::cellOpened(int all)
 
     // Игра закончилась победой
     if(fieldSize - all == m_gameField->bombs()) {
+        m_gameField->freeze(true);
         m_timer->stop();
         m_gameTime = gameTime();
         m_timerPanel->setText("WON " + m_gameTime.toString());

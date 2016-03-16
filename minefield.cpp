@@ -43,6 +43,7 @@ void MineField::createField()
 
     m_openedCells = 0;
     m_markedCells = 0;
+    freeze(false);
     emit cellMarked(0);
     update();
 }
@@ -240,11 +241,12 @@ void MineField::paintEvent(QPaintEvent *e) {
 
 void MineField::mousePressEvent(QMouseEvent *event)
 {
-    // Проверка на границы поля
+    // Проверка на границы поля и на заморозку
     if(        event->pos().x() > fullWidth() + getPositionOffset().x() - 1
             || event->pos().x() < getPositionOffset().x()
             || event->pos().y() > fullHeight() + getPositionOffset().y() - 1
-            || event->pos().y() < getPositionOffset().y() )
+            || event->pos().y() < getPositionOffset().y()
+            || m_frozen)
         return;
 
     // Переход к координатам клетки от абсолютных
@@ -267,6 +269,7 @@ void MineField::mousePressEvent(QMouseEvent *event)
 
         // Если попали на бомбу, игра окончена :(
         if(selected.isBomb()) {
+            freeze(true);
             emit gameFailed();
         } else {
             openCell(newCoords.x(), newCoords.y());

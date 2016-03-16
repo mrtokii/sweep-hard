@@ -20,6 +20,7 @@ private:
     int m_height;
     int m_bombs;
     int m_cellSize;
+    bool m_frozen;
 
     int m_openedCells;
     int m_markedCells;
@@ -40,6 +41,8 @@ public:
     void setProperties(int height, int width, int bombs);
     void setCellSize(int s);
     void showBombs();
+
+    void freeze(bool f) { m_frozen = f; }
 
     int fullWidth() { return m_width * m_cellSize; }
     int fullHeight() { return m_height * m_cellSize; }
