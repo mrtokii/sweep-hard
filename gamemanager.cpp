@@ -22,6 +22,7 @@ void GameManager::connectField(MineField *f)
     QObject::connect(m_gameField, SIGNAL(cellOpened(int)), this, SLOT(cellOpened(int)));
     QObject::connect(m_gameField, SIGNAL(gameStarted()), this, SLOT(gameStarted()));
     QObject::connect(m_gameField, SIGNAL(gameFailed()), this, SLOT(gameFailed()));
+    QObject::connect(m_gameField, SIGNAL(cellMarked(int)), this, SLOT(cellMarked(int)));
 }
 
 void GameManager::connectTimer(QLabel *t)
@@ -54,6 +55,7 @@ void GameManager::newGame(int level)
             m_gameField->setProperties(20, 20, 40);
         break;
     }
+
 }
 
 void GameManager::newGame(int w, int h, int bombs)
@@ -79,6 +81,12 @@ void GameManager::cellOpened(int all)
         msgBox.setText("U WON");
         msgBox.exec();
     }
+
+}
+
+void GameManager::cellMarked(int a)
+{
+    m_infoPanel->setText(QString::number(m_gameField->bombs() - a) + " bombs left");
 }
 
 void GameManager::gameStarted()
@@ -93,6 +101,7 @@ void GameManager::gameStarted()
 void GameManager::gameFailed()
 {
     m_timer->stop();
+    m_gameField->showBombs();
     QMessageBox msgBox;
     msgBox.setText("U FAILED");
     msgBox.exec();
@@ -100,7 +109,6 @@ void GameManager::gameFailed()
 
 void GameManager::updateTimer()
 {
-    qDebug() << gameTime().toString("mm:ss");
     m_timerPanel->setText(gameTime().toString("mm:ss"));
 }
 

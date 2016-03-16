@@ -35,6 +35,10 @@ QPixmap Cell::draw()
         case cellMarked:
             painter.fillRect(1, 1, 48, 48, Qt::green);
         break;
+
+        case cellBomb:
+            painter.fillRect(1, 1, 48, 48, Qt::white);
+        break;
     }
 
     return pic;

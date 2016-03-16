@@ -22,6 +22,7 @@ private:
     int m_cellSize;
 
     int m_openedCells;
+    int m_markedCells;
 
     void countNumbers();
     void placeBombs(int amount, int startX, int startY);
@@ -29,6 +30,8 @@ private:
     void openCell(int x, int y);
     bool empty(int x, int y);
     bool bomb(int x, int y);
+
+    QPoint getPositionOffset();
 
 public:
     explicit MineField(QWidget *parent = 0);
@@ -53,6 +56,7 @@ signals:
     void cellOpened(int all);
     void gameStarted();
     void gameFailed();
+    void cellMarked(int all);
 
 public slots:
 };

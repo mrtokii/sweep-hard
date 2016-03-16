@@ -40,6 +40,7 @@ signals:
 
 public slots:
     void cellOpened(int all);
+    void cellMarked(int a);
     void gameStarted();
     void gameFailed();
 

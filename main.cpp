@@ -12,11 +12,14 @@ int main(int argc, char *argv[])
 
     QLabel *timer = new QLabel("timer");
     timer->show();
+    QLabel *info = new QLabel("info");
+    info->show();
 
     MineField* mf = new MineField();
     GameManager *gm = new GameManager();
     gm->connectField(mf);
     gm->connectTimer(timer);
+    gm->connectInfoPanel(info);
 
     w.setField(mf);
 

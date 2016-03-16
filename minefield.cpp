@@ -5,25 +5,25 @@
 
 void MineField::placeBombs(int amount, int startX, int startY)
 {
-    qDebug() << "AMOUNT: " << amount;
-    qDebug() << "START: " << startX << " " << startY;
-
+    // Разбуриваем генератор случайных чисел
     QTime midnight(0,0,0);
     qsrand(midnight.secsTo(QTime::currentTime()));
 
     for(int i = 0; i < amount;) {
-
-
+        // Генерируем случайные координаты
         int randomY = qrand() % m_height;
         int randomX = qrand() % m_width;
 
 
-        // Для открытия только нулевых клеток
+        // Проверка на то, чтобы рядом со стартовой позицией
+        // не было бомб
         bool bombAround = randomX >= startX-1 && randomX <= startX+1
                 && randomY >= startY-1 && randomY <= startY+1;
 
-        if(!bombAround && !(randomY == startY && randomX == startX))
+
+        if(!bombAround && !m_field[randomY][randomX].isBomb())
         {
+            // Размещаем бомбу
             m_field[randomY][randomX].setContents(9);
             i++;
         }
@@ -33,27 +33,41 @@ void MineField::placeBombs(int amount, int startX, int startY)
 
 void MineField::createField()
 {
+    // Создаем массив клеток...
     m_field = QVector< QVector< Cell > >(m_height);
 
+    // ...и заполняем пустыми клетками
     for(int i = 0; i < m_height; i++) {
         m_field[i] = QVector< Cell >(m_width);
     }
 
     m_openedCells = 0;
+    m_markedCells = 0;
+    emit cellMarked(0);
     update();
 }
 
 void MineField::openCell(int x, int y)
 {
+    // Проверка на попадание в поле
     if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
+
+        // Ссылка на текущую клетку
         Cell &current = m_field[y][x];
 
+        // Проверка на то, стоит ли ее открывать
         if(!current.opened() && !current.isBomb()) {
 
+            // Безопасно удаляем флажок, если он стоит на клетке
+            if(current.marked())
+                emit cellMarked(--m_markedCells);
+
+            // Открываем клетку и сигналим всем об этом
             current.open();
             emit cellOpened(++m_openedCells);
 
-            if(empty(x, y)) { // Если ячейка пуская, открываем все соседние клетки
+            // Если клетка пустая, открываем все соседние клетки
+            if(empty(x, y)) {
                 openCell(x - 1, y - 1);
                 openCell(x, y - 1);
                 openCell(x + 1, y - 1);
@@ -62,7 +76,9 @@ void MineField::openCell(int x, int y)
                 openCell(x - 1, y + 1);
                 openCell(x, y + 1);
                 openCell(x + 1, y + 1);
-            } else { // Если не пустая, открываем пустые рядом
+
+            // Если не пустая, открываем пустые рядом
+            } else {
                 if(empty(x - 1, y - 1)) // 7
                     openCell(x - 1, y - 1);
 
@@ -115,6 +131,15 @@ bool MineField::bomb(int x, int y)
     return false;
 }
 
+QPoint MineField::getPositionOffset()
+{
+    return QPoint(
+                (size().width() - fullWidth()) / 2,
+                (size().height() - fullHeight()) / 2
+            );
+
+}
+
 void MineField::countNumbers()
 {
     for(int i = 0; i < m_height; i++) {
@@ -153,7 +178,6 @@ void MineField::countNumbers()
 
 MineField::MineField(QWidget *parent) : QWidget(parent)
 {
-    m_openedCells = 0;
     m_height = 1;
     m_width = 1;
     m_bombs = 1;
@@ -186,11 +210,26 @@ void MineField::setCellSize(int s)
 
 void MineField::showBombs()
 {
+    // Ссылка на текущую клетку
+    Cell *current;
 
+    for(int i = 0; i < m_height; i++) {
+        for(int j = 0; j < m_width; j++) {
+            current = &m_field[i][j];
+            if(current->isBomb())
+                current->showBomb();
+        }
+    }
 }
 
 void MineField::paintEvent(QPaintEvent *e) {
+
+    // Определяем размер клеток исходя из размера виджета
+    int minSide = qMin(size().width(), size().height());
+    setCellSize(minSide / qMax(m_width, m_height));
+
     QPainter painter(this);
+    painter.translate(getPositionOffset());
 
     for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {
@@ -201,33 +240,50 @@ void MineField::paintEvent(QPaintEvent *e) {
 
 void MineField::mousePressEvent(QMouseEvent *event)
 {
-    if(event->pos().x() > m_width*m_cellSize-1 || event->pos().y() > m_height*m_cellSize-1)
+    // Проверка на границы поля
+    if(        event->pos().x() > fullWidth() + getPositionOffset().x() - 1
+            || event->pos().x() < getPositionOffset().x()
+            || event->pos().y() > fullHeight() + getPositionOffset().y() - 1
+            || event->pos().y() < getPositionOffset().y() )
         return;
 
+    // Переход к координатам клетки от абсолютных
     QPoint newCoords;
-    newCoords.setX(event->pos().x() / m_cellSize);
-    newCoords.setY(event->pos().y() / m_cellSize);
-    qDebug() << "FieldClick: " << newCoords.x() << " " << newCoords.y();
+    newCoords.setX( (event->pos() - getPositionOffset()).x() / m_cellSize);
+    newCoords.setY( (event->pos() - getPositionOffset()).y() / m_cellSize);
 
-    if (event->button() == Qt::LeftButton && !m_field[newCoords.y()][newCoords.x()].marked()) {
+    // Ссылка на выбранную ячейку
+    Cell &selected = m_field[newCoords.y()][newCoords.x()];
 
-        if(!m_openedCells) { // Начало игры
+    // При нажатии ЛКМ
+    if (event->button() == Qt::LeftButton && !selected.marked()) {
+
+        // Начало игры, если ни одной ячейки еще не открыто
+        if(!m_openedCells) {
             generateField(newCoords.x(), newCoords.y());
             emit gameStarted();
         }
 
 
-        if(m_field[newCoords.y()][newCoords.x()].isBomb()) {
+        // Если попали на бомбу, игра окончена :(
+        if(selected.isBomb()) {
             emit gameFailed();
         } else {
             openCell(newCoords.x(), newCoords.y());
         }
-    } else if(event->button() == Qt::RightButton) {
-        if(!m_field[newCoords.y()][newCoords.x()].opened()) {
-            m_field[newCoords.y()][newCoords.x()].mark(!m_field[newCoords.y()][newCoords.x()].marked());
+    }
+
+    // При нажатии ПКМ
+    if(event->button() == Qt::RightButton) {
+
+        // Выделяем клетку флажком или снимаем выделение
+        if(!selected.opened()) {
+            bool mark = selected.invertMark();
+            emit cellMarked(mark ? ++m_markedCells : --m_markedCells);
         }
     }
 
+    // Перерисовываем виджет
     this->update();
 }
 
