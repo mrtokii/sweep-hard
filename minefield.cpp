@@ -43,6 +43,8 @@ void MineField::createField()
 
     m_openedCells = 0;
     m_markedCells = 0;
+    emit gamePrepared();
+
     freeze(false);
     emit cellMarked(0);
     update();

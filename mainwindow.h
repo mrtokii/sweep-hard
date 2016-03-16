@@ -5,6 +5,7 @@
 #include <QMessageBox>
 
 #include "minefield.h"
+#include "gamemanager.h"
 
 namespace Ui {
 class MainWindow;
@@ -13,6 +14,8 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+    GameManager *m_gameManager;
 
 public:
     explicit MainWindow(QWidget *parent = 0);

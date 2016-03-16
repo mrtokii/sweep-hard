@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
     w.show();
 
     QLabel *timer = new QLabel("timer");
-    timer->show();
+    //timer->show();
     QLabel *info = new QLabel("info");
-    info->show();
+    //info->show();
 
     MineField* mf = new MineField();
     GameManager *gm = new GameManager();
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     gm->newGame(GameManager::easy);
 
-    mf->show();
+    //mf->show();
 
     return a.exec();
 }

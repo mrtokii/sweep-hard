@@ -60,6 +60,7 @@ signals:
     void gameStarted();
     void gameFailed();
     void cellMarked(int all);
+    void gamePrepared();
 
 public slots:
 };

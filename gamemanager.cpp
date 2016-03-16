@@ -9,6 +9,8 @@ GameManager::GameManager(QObject *parent) : QObject(parent)
     m_gameField = NULL;
     m_startTime = QTime::currentTime();
     m_timer = new QTimer(this);
+
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
 }
 
 GameManager::~GameManager()
@@ -23,6 +25,7 @@ void GameManager::connectField(MineField *f)
     QObject::connect(m_gameField, SIGNAL(gameStarted()), this, SLOT(gameStarted()));
     QObject::connect(m_gameField, SIGNAL(gameFailed()), this, SLOT(gameFailed()));
     QObject::connect(m_gameField, SIGNAL(cellMarked(int)), this, SLOT(cellMarked(int)));
+    QObject::connect(m_gameField, SIGNAL(gamePrepared()), this, SLOT(gamePrepared()));
 }
 
 void GameManager::connectTimer(QLabel *t)
@@ -92,7 +95,7 @@ void GameManager::cellMarked(int a)
 
 void GameManager::gameStarted()
 {
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
+
     m_startTime.start();
     m_timer->start(1000);
     updateTimer();
@@ -106,6 +109,11 @@ void GameManager::gameFailed()
     QMessageBox msgBox;
     msgBox.setText("U FAILED");
     msgBox.exec();
+}
+
+void GameManager::gamePrepared()
+{
+    m_timer->stop();
 }
 
 void GameManager::updateTimer()

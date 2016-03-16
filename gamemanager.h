@@ -43,6 +43,7 @@ public slots:
     void cellMarked(int a);
     void gameStarted();
     void gameFailed();
+    void gamePrepared();
 
     void updateTimer();
 };

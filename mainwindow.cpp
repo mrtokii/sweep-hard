@@ -6,6 +6,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->sidePanel->addStretch(1);
+
+    m_gameManager = new GameManager();
+    MineField *field = new MineField();
+
+    m_gameManager->connectField(field);
+    m_gameManager->connectTimer(ui->timerLabel);
+    m_gameManager->connectInfoPanel((ui->infoLabel));
+
+    ui->fieldPlace->addWidget(field);
 
 
 }
@@ -22,12 +32,14 @@ void MainWindow::setField(MineField *field) {
 
 void MainWindow::on_generateField_clicked()
 {
-    if(ui->spinBoxBombs->value() < ui->spinBoxHeight->value() * ui->spinBoxWidth->value()) {
+    /*if(ui->spinBoxBombs->value() < ui->spinBoxHeight->value() * ui->spinBoxWidth->value()) {
         m_field->setProperties(ui->spinBoxHeight->value(), ui->spinBoxWidth->value(), ui->spinBoxBombs->value());
     } else {
         QMessageBox msgBox;
         msgBox.setText("Too many bombs for this field!");
         msgBox.exec();
-    }
+    }*/
+
+    m_gameManager->newGame(ui->difficultySlider->value());
 
 }
