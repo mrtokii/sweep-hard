@@ -134,6 +134,7 @@ bool MineField::bomb(int x, int y)
     return false;
 }
 
+// Сдвиг координат поля относительно нуля координат виджета
 QPoint MineField::getPositionOffset()
 {
     return QPoint(
@@ -143,6 +144,7 @@ QPoint MineField::getPositionOffset()
 
 }
 
+// Подсчет количества мин рядом с каждой клеткой
 void MineField::countNumbers()
 {
     for(int i = 0; i < m_height; i++) {
@@ -229,10 +231,21 @@ void MineField::paintEvent(QPaintEvent *e) {
 
     // Определяем размер клеток исходя из размера виджета
     int minSide = qMin(size().width(), size().height());
-    setCellSize(minSide / qMax(m_width, m_height));
+    float iRatio = m_width*1.0 / m_height*1.0;
+    float oRatio = size().width()*1.0 / size().height()*1.0;
+    int side;
+
+    if(oRatio > iRatio)
+        setCellSize( size().height() / m_height );
+    else
+        setCellSize( size().width() / m_width );
 
     QPainter painter(this);
+    painter.fillRect(QRect(0, 0, size().width(), size().height()), Qt::black);
+
     painter.translate(getPositionOffset());
+
+
 
     for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {

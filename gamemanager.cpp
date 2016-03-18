@@ -51,11 +51,11 @@ void GameManager::newGame(int level)
         break;
 
         case medium:
-            m_gameField->setProperties(15, 15, 25);
+            m_gameField->setProperties(30, 18, 25);
         break;
 
         case hard:
-            m_gameField->setProperties(20, 20, 40);
+            m_gameField->setProperties(18, 30, 40);
         break;
     }
 
@@ -79,11 +79,12 @@ void GameManager::cellOpened(int all)
         m_gameField->freeze(true);
         m_timer->stop();
         m_gameTime = gameTime();
-        m_timerPanel->setText("WON " + m_gameTime.toString());
 
-        QMessageBox msgBox;
+        m_infoPanel->setText("U WON");
+
+        /*QMessageBox msgBox;
         msgBox.setText("U WON");
-        msgBox.exec();
+        msgBox.exec();*/
     }
 
 }
@@ -97,7 +98,7 @@ void GameManager::gameStarted()
 {
 
     m_startTime.start();
-    m_timer->start(1000);
+    m_timer->start(300);
     updateTimer();
 
 }
@@ -106,9 +107,12 @@ void GameManager::gameFailed()
 {
     m_timer->stop();
     m_gameField->showBombs();
-    QMessageBox msgBox;
+
+    m_infoPanel->setText("U FAILED");
+
+    /*QMessageBox msgBox;
     msgBox.setText("U FAILED");
-    msgBox.exec();
+    msgBox.exec();*/
 }
 
 void GameManager::gamePrepared()
