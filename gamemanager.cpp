@@ -68,6 +68,8 @@ void GameManager::newGame(int w, int h, int bombs)
 
     m_gameLevel = custom;
     m_gameField->setProperties(h, w, bombs);
+
+    cellMarked(0);
 }
 
 void GameManager::cellOpened(int all)

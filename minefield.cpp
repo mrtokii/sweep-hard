@@ -241,7 +241,7 @@ void MineField::paintEvent(QPaintEvent *e) {
         setCellSize( size().width() / m_width );
 
     QPainter painter(this);
-    painter.fillRect(QRect(0, 0, size().width(), size().height()), Qt::black);
+    painter.fillRect(QRect(0, 0, size().width(), size().height()), QColor(43, 43, 43));
 
     painter.translate(getPositionOffset());
 

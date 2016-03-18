@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/BombCell.png</file>
+        <file>images/ClosedCell.png</file>
+        <file>images/OpenedCell.png</file>
+        <file>images/MarkedCell.png</file>
+    </qresource>
+</RCC>

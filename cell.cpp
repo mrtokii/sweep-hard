@@ -16,12 +16,14 @@ QPixmap Cell::draw()
 
     switch(m_state) {
         case cellNotOpened:
-            painter.fillRect(1, 1, 48, 48, Qt::black);
+            //painter.fillRect(1, 1, 48, 48, Qt::black);
+            painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/ClosedCell.png"));
         break;
 
         case cellOpened:
             if(!this->isBomb()) {
-                painter.fillRect(1, 1, 48, 48, Qt::blue);
+                //painter.fillRect(1, 1, 48, 48, Qt::blue);
+                painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/OpenedCell.png"));
 
                 painter.setPen(Qt::white);
 
@@ -33,11 +35,13 @@ QPixmap Cell::draw()
         break;
 
         case cellMarked:
-            painter.fillRect(1, 1, 48, 48, Qt::green);
+            painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/MarkedCell.png"));
+            //painter.fillRect(1, 1, 48, 48, Qt::green);
         break;
 
         case cellBomb:
-            painter.fillRect(1, 1, 48, 48, Qt::white);
+            painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/BombCell.png"));
+            //painter.fillRect(1, 1, 48, 48, Qt::white);
         break;
     }
 

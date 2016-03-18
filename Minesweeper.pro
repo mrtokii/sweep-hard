@@ -24,3 +24,6 @@ HEADERS  += mainwindow.h \
     gamemanager.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    resources.qrc
