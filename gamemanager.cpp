@@ -1,4 +1,5 @@
 #include "gamemanager.h"
+#include "newgamedialog.h"
 #include <QMessageBox>
 #include <QTime>
 #include <QTimer>
@@ -36,6 +37,12 @@ void GameManager::connectTimer(QLabel *t)
 void GameManager::connectInfoPanel(QLabel *p)
 {
     m_infoPanel = p;
+}
+
+void GameManager::newGame()
+{
+    NewGameDialog dialog(this);
+    dialog.exec();
 }
 
 void GameManager::newGame(int level)

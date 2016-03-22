@@ -16,14 +16,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     cell.cpp \
     minefield.cpp \
-    gamemanager.cpp
+    gamemanager.cpp \
+    newgamedialog.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
     minefield.h \
-    gamemanager.h
+    gamemanager.h \
+    newgamedialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    newgamedialog.ui
 
 RESOURCES += \
     resources.qrc

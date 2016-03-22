@@ -36,6 +36,6 @@ void MainWindow::setField(MineField *field) {
 
 void MainWindow::on_generateField_clicked()
 {
-    m_gameManager->newGame(ui->difficultySlider->value());
+    m_gameManager->newGame();
 
 }

@@ -33,6 +33,7 @@ public:
     void connectTimer(QLabel *t);
     void connectInfoPanel(QLabel *p);
 
+    void newGame();
     void newGame(int level);
     void newGame(int w, int h, int bombs);
 
