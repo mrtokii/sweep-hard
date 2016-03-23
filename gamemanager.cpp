@@ -100,7 +100,7 @@ void GameManager::cellOpened(int all)
 
 void GameManager::cellMarked(int a)
 {
-    m_infoPanel->setText(QString::number(m_gameField->bombs() - a) + " bombs left");
+        m_infoPanel->setText(QString::number(m_gameField->bombs() - a));
 }
 
 void GameManager::gameStarted()
