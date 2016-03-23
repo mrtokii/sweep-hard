@@ -22,6 +22,8 @@ private:
     int m_cellSize;
     bool m_frozen;
 
+    QString m_messageText;
+
     int m_openedCells;
     int m_markedCells;
 
@@ -31,6 +33,9 @@ private:
     void openCell(int x, int y);
     bool empty(int x, int y);
     bool bomb(int x, int y);
+
+    // Костыль
+    bool forceOpen(int x, int y);
 
     QPoint getPositionOffset();
 
@@ -50,6 +55,9 @@ public:
     int bombs() { return m_bombs; }
     int width() { return m_width; }
     int height() { return m_height; }
+
+    void setMessageText(QString message) { m_messageText = message; }
+    void clearMessageText() { m_messageText = ""; }
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;

@@ -51,6 +51,7 @@ void GameManager::newGame(int level)
         return;
 
     m_gameLevel = level;
+    m_gameField->clearMessageText();
 
     switch(level) {
         case easy:
@@ -73,6 +74,7 @@ void GameManager::newGame(int w, int h, int bombs)
     if(m_gameField == NULL)
         return;
 
+    m_gameField->clearMessageText();
     m_gameLevel = custom;
     m_gameField->setProperties(h, w, bombs);
 
@@ -90,6 +92,7 @@ void GameManager::cellOpened(int all)
         m_gameTime = gameTime();
 
         m_infoPanel->setText("U WON");
+        m_gameField->setMessageText("Вы ВЫИГРАЛИ!!!");
 
         /*QMessageBox msgBox;
         msgBox.setText("U WON");
@@ -105,11 +108,9 @@ void GameManager::cellMarked(int a)
 
 void GameManager::gameStarted()
 {
-
     m_startTime.start();
     m_timer->start(300);
     updateTimer();
-
 }
 
 void GameManager::gameFailed()
@@ -118,6 +119,7 @@ void GameManager::gameFailed()
     m_gameField->showBombs();
 
     m_infoPanel->setText("U FAILED");
+    m_gameField->setMessageText("Вы проиграли :(");
 
     /*QMessageBox msgBox;
     msgBox.setText("U FAILED");

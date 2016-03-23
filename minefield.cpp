@@ -58,7 +58,8 @@ void MineField::openCell(int x, int y)
         // Ссылка на текущую клетку
         Cell &current = m_field[y][x];
 
-        // Проверка на то, стоит ли ее открывать
+        // Проверка на то, стоит ли ее открывать     
+
         if(!current.opened() && !current.isBomb()) {
 
             // Безопасно удаляем флажок, если он стоит на клетке
@@ -134,6 +135,20 @@ bool MineField::bomb(int x, int y)
     return false;
 }
 
+bool MineField::forceOpen(int x, int y)
+{
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
+        if(m_field[y][x].marked() || m_field[y][x].opened())
+            return false;
+
+        openCell(x, y);
+        if(m_field[y][x].isBomb())
+            return true;
+    }
+
+    return false;
+}
+
 // Сдвиг координат поля относительно нуля координат виджета
 QPoint MineField::getPositionOffset()
 {
@@ -189,6 +204,7 @@ MineField::MineField(QWidget *parent) : QWidget(parent)
 
     setCellSize(50);
     setProperties(9, 9, 10);
+    clearMessageText();
 }
 
 void MineField::generateField(int startX, int startY)
@@ -240,6 +256,7 @@ void MineField::paintEvent(QPaintEvent *e) {
     else
         setCellSize( size().width() / m_width );
 
+    // Начинаем рисовать!
     QPainter painter(this);
     painter.fillRect(QRect(0, 0, size().width(), size().height()), QColor(43, 43, 43));
 
@@ -252,6 +269,23 @@ void MineField::paintEvent(QPaintEvent *e) {
             painter.drawPixmap(j * m_cellSize, i * m_cellSize, m_cellSize, m_cellSize, m_field[i][j].draw());
         }
     }
+
+    if(m_messageText != "") {
+        QFont font("times", 32);
+        QFontMetrics fm(font);
+        int pixelsWide = fm.width(m_messageText);
+        int pixelsHigh = fm.height();
+        QRect r = fm.boundingRect(m_messageText);
+        r += QMargins(5, 5, 5, 5);
+
+        painter.translate( (fullWidth() - pixelsWide) / 2, (fullHeight() + pixelsHigh) / 2 );
+        painter.setFont(font);
+        painter.setPen(Qt::white);
+
+        painter.fillRect(r, QColor(43, 43, 43));
+        painter.drawText(0, 0, m_messageText);
+    }
+
 }
 
 void MineField::mousePressEvent(QMouseEvent *event)
@@ -281,6 +315,22 @@ void MineField::mousePressEvent(QMouseEvent *event)
             emit gameStarted();
         }
 
+        if(selected.opened()) {
+            bool fail =
+                   forceOpen(newCoords.x() - 1, newCoords.y() - 1) ||
+                   forceOpen(newCoords.x(), newCoords.y() - 1) ||
+                   forceOpen(newCoords.x() + 1, newCoords.y() - 1) ||
+                   forceOpen(newCoords.x() - 1, newCoords.y()) ||
+                   forceOpen(newCoords.x() + 1, newCoords.y()) ||
+                   forceOpen(newCoords.x() - 1, newCoords.y() + 1) ||
+                   forceOpen(newCoords.x(), newCoords.y() + 1) ||
+                   forceOpen(newCoords.x() + 1, newCoords.y() + 1);
+
+            if(fail) {
+                freeze(true);
+                emit gameFailed();
+            }
+        }
 
         // Если попали на бомбу, игра окончена :(
         if(selected.isBomb()) {
