@@ -4,5 +4,13 @@
         <file>images/ClosedCell.png</file>
         <file>images/OpenedCell.png</file>
         <file>images/MarkedCell.png</file>
+        <file>images/Numbers/1.png</file>
+        <file>images/Numbers/2.png</file>
+        <file>images/Numbers/3.png</file>
+        <file>images/Numbers/4.png</file>
+        <file>images/Numbers/5.png</file>
+        <file>images/Numbers/6.png</file>
+        <file>images/Numbers/7.png</file>
+        <file>images/Numbers/8.png</file>
     </qresource>
 </RCC>

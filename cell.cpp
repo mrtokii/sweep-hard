@@ -16,21 +16,20 @@ QPixmap Cell::draw()
 
     switch(m_state) {
         case cellNotOpened:
-            //painter.fillRect(1, 1, 48, 48, Qt::black);
             painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/ClosedCell.png"));
         break;
 
         case cellOpened:
-            if(!this->isBomb()) {
-                //painter.fillRect(1, 1, 48, 48, Qt::blue);
-                painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/OpenedCell.png"));
+            painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/OpenedCell.png"));
 
-                painter.setPen(Qt::white);
-
+            if(contents() != 0) {
+                /*painter.setPen(Qt::white);
                 QFont font = painter.font() ;
                 font.setPointSize(10);
                 painter.setFont(font);
-                painter.drawText(QPoint(21, 28), QString::number(this->m_contents));
+                painter.drawText(QPoint(21, 28), QString::number(this->m_contents));*/
+
+                painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/Numbers/" + QString::number(contents()) + ".png"));
             }
         break;
 
