@@ -22,6 +22,9 @@ private:
     int m_cellSize;
     bool m_frozen;
 
+    int m_highlightX;
+    int m_highlightY;
+
     QString m_messageText;
 
     int m_openedCells;
@@ -41,6 +44,8 @@ private:
 
 public:
     explicit MineField(QWidget *parent = 0);
+
+    bool m_highlight;
 
     void generateField(int startX, int startY);
     void setProperties(int height, int width, int bombs);
@@ -62,6 +67,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 signals:
     void cellOpened(int all);
@@ -71,6 +77,7 @@ signals:
     void gamePrepared();
 
 public slots:
+
 };
 
 #endif // MINEFIELD_H

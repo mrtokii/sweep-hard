@@ -202,9 +202,16 @@ MineField::MineField(QWidget *parent) : QWidget(parent)
     m_width = 1;
     m_bombs = 1;
 
+    m_highlight = true;
+
+    m_highlightX = -1;
+    m_highlightY = -1;
+
     setCellSize(50);
     setProperties(9, 9, 10);
     clearMessageText();
+
+    setMouseTracking(true);
 }
 
 void MineField::generateField(int startX, int startY)
@@ -270,13 +277,18 @@ void MineField::paintEvent(QPaintEvent *e) {
         }
     }
 
+    if(m_highlightX != -1 && m_highlightY != -1) {
+        painter.fillRect(QRect(m_highlightX * m_cellSize, m_highlightY * m_cellSize, m_cellSize, m_cellSize), QColor(43, 43, 43, 50));
+    }
+
+    // Текстовое сообщение
     if(m_messageText != "") {
         QFont font("times", 32);
         QFontMetrics fm(font);
         int pixelsWide = fm.width(m_messageText);
         int pixelsHigh = fm.height();
         QRect r = fm.boundingRect(m_messageText);
-        r += QMargins(5, 5, 5, 5);
+        r += QMargins(15, 15, 15, 15);
 
         painter.translate( (fullWidth() - pixelsWide) / 2, (fullHeight() + pixelsHigh) / 2 );
         painter.setFont(font);
@@ -353,6 +365,29 @@ void MineField::mousePressEvent(QMouseEvent *event)
 
     // Перерисовываем виджет
     this->update();
+}
+
+void MineField::mouseMoveEvent(QMouseEvent *event) {
+
+    if(!m_highlight)
+        return;
+
+    // Проверка на границы поля и на заморозку
+    if(        event->pos().x() > fullWidth() + getPositionOffset().x() - 1
+            || event->pos().x() < getPositionOffset().x()
+            || event->pos().y() > fullHeight() + getPositionOffset().y() - 1
+            || event->pos().y() < getPositionOffset().y()) {
+        update();
+        m_highlightX = -1;
+        m_highlightY = -1;
+    } else {
+        m_highlightX = (event->pos() - getPositionOffset()).x() / m_cellSize;
+        m_highlightY = (event->pos() - getPositionOffset()).y() / m_cellSize;
+        update();
+    }
+
+
+
 }
 
 
