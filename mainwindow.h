@@ -26,6 +26,8 @@ public:
 private slots:
     void on_generateField_clicked();
 
+    void on_aboutButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     MineField *m_field;

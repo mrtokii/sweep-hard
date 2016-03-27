@@ -202,7 +202,7 @@ MineField::MineField(QWidget *parent) : QWidget(parent)
     m_width = 1;
     m_bombs = 1;
 
-    m_highlight = true;
+    m_highlight = false;
 
     m_highlightX = -1;
     m_highlightY = -1;

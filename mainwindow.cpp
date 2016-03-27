@@ -39,3 +39,10 @@ void MainWindow::on_generateField_clicked()
     m_gameManager->newGame();
 
 }
+
+void MainWindow::on_aboutButton_clicked()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Сапёр V1.00 (160327).\n Сделано mrtokii.");
+    msgBox.exec();
+}
