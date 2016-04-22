@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->sidePanel->setAlignment(Qt::AlignBottom);
-    //ui->sidePanel->addStretch(1);
 
+    //this->setFont(parent->font());
 
     m_gameManager = new GameManager();
     MineField *field = new MineField();
@@ -43,6 +43,6 @@ void MainWindow::on_generateField_clicked()
 void MainWindow::on_aboutButton_clicked()
 {
     QMessageBox msgBox;
-    msgBox.setText("Сапёр V1.00 (160327).\n Сделано mrtokii.");
+    msgBox.setText("Minesweeper V1.10 UWP (160422).\nMade by mrtokii. \nI dedicate this great game to my programming teacher, which is probably in Subway now...");
     msgBox.exec();
 }

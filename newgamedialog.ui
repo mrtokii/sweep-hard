@@ -17,14 +17,14 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Новая игра</string>
+   <string>New Game</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
     <normaloff>:/images/BombCell.png</normaloff>:/images/BombCell.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-color: rgb(43, 43, 43);</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -33,7 +33,7 @@
       <widget class="QLabel" name="message1Label">
        <property name="font">
         <font>
-         <family>Segoe UI Light</family>
+         <family>Arial</family>
          <pointsize>15</pointsize>
         </font>
        </property>
@@ -41,7 +41,7 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>Уровень сложности</string>
+        <string>Select difficulty</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -56,15 +56,25 @@
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="2" column="0">
         <widget class="QLabel" name="bombsLabel">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
          <property name="text">
-          <string>Бомбы</string>
+          <string>Bombs</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QSpinBox" name="customWidth">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
          <property name="suffix">
-          <string> клеток</string>
+          <string> cells</string>
          </property>
          <property name="minimum">
           <number>4</number>
@@ -76,8 +86,13 @@
        </item>
        <item row="0" column="1">
         <widget class="QSpinBox" name="customHeight">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
          <property name="suffix">
-          <string> клеток</string>
+          <string> cells</string>
          </property>
          <property name="prefix">
           <string/>
@@ -92,8 +107,13 @@
        </item>
        <item row="2" column="1">
         <widget class="QSpinBox" name="customBombs">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
          <property name="suffix">
-          <string> бомб</string>
+          <string> bombs</string>
          </property>
          <property name="minimum">
           <number>1</number>
@@ -108,22 +128,38 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="widthLabel">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
          <property name="text">
-          <string>Ширина</string>
+          <string>Width</string>
          </property>
         </widget>
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="heightLabel">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
          <property name="text">
-          <string>Высота</string>
+          <string>Height</string>
          </property>
         </widget>
        </item>
        <item row="3" column="0" colspan="2">
         <widget class="QPushButton" name="startCustom">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string>СВОЯ ИГРА</string>
+          <string>CUSTOM GAME</string>
          </property>
         </widget>
        </item>
@@ -137,8 +173,24 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
-        <string>ЛЕГКО</string>
+        <string>EASY</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/Icons/star_green.png</normaloff>:/images/Icons/star_green.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>40</width>
+         <height>40</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -150,8 +202,24 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
-        <string>СРЕДНЕ</string>
+        <string>MEDIUM</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/Icons/star_yellow.png</normaloff>:/images/Icons/star_yellow.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>40</width>
+         <height>40</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -163,8 +231,24 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
-        <string>СЛОЖНО</string>
+        <string>HARD</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/Icons/star_red.png</normaloff>:/images/Icons/star_red.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>40</width>
+         <height>40</height>
+        </size>
        </property>
       </widget>
      </item>

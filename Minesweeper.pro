@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     cell.cpp \
     minefield.cpp \
     gamemanager.cpp \
-    newgamedialog.cpp
+    newgamedialog.cpp \
+    qstylesheet.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
     minefield.h \
     gamemanager.h \
-    newgamedialog.h
+    newgamedialog.h \
+    qstylesheet.h
 
 FORMS    += mainwindow.ui \
     newgamedialog.ui

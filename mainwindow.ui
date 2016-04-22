@@ -64,7 +64,6 @@
         </property>
         <property name="font">
          <font>
-          <family>Segoe UI Light</family>
           <pointsize>40</pointsize>
           <weight>50</weight>
           <bold>false</bold>
@@ -100,10 +99,10 @@
         </property>
         <property name="font">
          <font>
-          <family>Segoe UI Light</family>
+          <family>Arial</family>
           <pointsize>15</pointsize>
-          <italic>true</italic>
-          <underline>true</underline>
+          <italic>false</italic>
+          <underline>false</underline>
           <stylestrategy>PreferDefault</stylestrategy>
           <kerning>true</kerning>
          </font>
@@ -112,7 +111,7 @@
          <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>Начните игру</string>
+         <string>Make a move</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -138,11 +137,16 @@
             <height>16777215</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
+          </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);</string>
           </property>
           <property name="text">
-           <string>Новая игра</string>
+           <string>New game</string>
           </property>
          </widget>
         </item>
@@ -156,15 +160,20 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>70</width>
+            <width>80</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
           </property>
           <property name="styleSheet">
            <string notr="true">color: white;</string>
           </property>
           <property name="text">
-           <string>Об игре</string>
+           <string>About</string>
           </property>
          </widget>
         </item>

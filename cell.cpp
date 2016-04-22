@@ -23,24 +23,16 @@ QPixmap Cell::draw()
             painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/OpenedCell.png"));
 
             if(contents() != 0) {
-                /*painter.setPen(Qt::white);
-                QFont font = painter.font() ;
-                font.setPointSize(10);
-                painter.setFont(font);
-                painter.drawText(QPoint(21, 28), QString::number(this->m_contents));*/
-
                 painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/Numbers/" + QString::number(contents()) + ".png"));
             }
         break;
 
         case cellMarked:
             painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/MarkedCell.png"));
-            //painter.fillRect(1, 1, 48, 48, Qt::green);
         break;
 
         case cellBomb:
             painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/BombCell.png"));
-            //painter.fillRect(1, 1, 48, 48, Qt::white);
         break;
     }
 

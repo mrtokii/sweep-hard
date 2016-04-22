@@ -12,5 +12,10 @@
         <file>images/Numbers/6.png</file>
         <file>images/Numbers/7.png</file>
         <file>images/Numbers/8.png</file>
+        <file>fonts/segoeui.ttf</file>
+        <file>images/Icons/star_green.png</file>
+        <file>images/Icons/star_red.png</file>
+        <file>images/Icons/star_yellow.png</file>
+        <file>styles/app.css</file>
     </qresource>
 </RCC>

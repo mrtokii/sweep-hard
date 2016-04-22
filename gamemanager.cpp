@@ -91,8 +91,8 @@ void GameManager::cellOpened(int all)
         m_timer->stop();
         m_gameTime = gameTime();
 
-        m_infoPanel->setText("ВЫ ВЫИГРАЛИ");
-        m_gameField->setMessageText("Вы ВЫИГРАЛИ!!!");
+        m_infoPanel->setText("YOU WON!");
+        m_gameField->setMessageText("YOU WON!");
     }
 
 }
@@ -114,8 +114,8 @@ void GameManager::gameFailed()
     m_timer->stop();
     m_gameField->showBombs();
 
-    m_infoPanel->setText("*****");
-    m_gameField->setMessageText("Вы проиграли :(");
+    m_infoPanel->setText("Start a game");
+    m_gameField->setMessageText("YOU LOSE :(");
 }
 
 void GameManager::gamePrepared()

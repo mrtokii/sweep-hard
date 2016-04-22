@@ -283,7 +283,7 @@ void MineField::paintEvent(QPaintEvent *e) {
 
     // Текстовое сообщение
     if(m_messageText != "") {
-        QFont font("times", 32);
+        QFont font("arial", 32);
         QFontMetrics fm(font);
         int pixelsWide = fm.width(m_messageText);
         int pixelsHigh = fm.height();

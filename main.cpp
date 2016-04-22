@@ -1,12 +1,19 @@
 #include "mainwindow.h"
 #include "minefield.h"
 #include "gamemanager.h"
+#include "qstylesheet.h"
+
 #include <QApplication>
 #include <QLabel>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QStyleSheet mainStyle("://styles/app.css");
+
+    a.setStyleSheet(mainStyle.style());
+
     MainWindow w;
     w.show();
 
@@ -24,8 +31,6 @@ int main(int argc, char *argv[])
     w.setField(mf);
 
     gm->newGame(GameManager::easy);
-
-    //mf->show();
 
     return a.exec();
 }
