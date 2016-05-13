@@ -5,6 +5,8 @@
 #include <QLabel>
 #include <QTime>
 #include <QTimer>
+#include <QVector>
+#include "record.h"
 #include "minefield.h"
 
 class GameManager : public QObject
@@ -23,6 +25,13 @@ class GameManager : public QObject
 
     QTime gameTime();
 
+    QVector<Record> m_recordsE;
+    QVector<Record> m_recordsM;
+    QVector<Record> m_recordsH;
+
+    void readRecords(int diff);
+    void writeRecords(int diff);
+
 public:
     enum { easy, medium, hard, custom };
 
@@ -36,6 +45,8 @@ public:
     void newGame();
     void newGame(int level);
     void newGame(int w, int h, int bombs);
+
+    void showRecords();
 
 signals:
 

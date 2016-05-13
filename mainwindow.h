@@ -6,6 +6,7 @@
 
 #include "minefield.h"
 #include "gamemanager.h"
+#include "recordsdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,8 @@ private slots:
     void on_generateField_clicked();
 
     void on_aboutButton_clicked();
+
+    void on_recordsButton_clicked();
 
 private:
     Ui::MainWindow *ui;

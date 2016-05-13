@@ -1,9 +1,15 @@
 #include "gamemanager.h"
 #include "newgamedialog.h"
+#include "recordsdialog.h"
 #include <QMessageBox>
 #include <QTime>
 #include <QTimer>
 #include <QDebug>
+#include <QInputDialog>
+#include <QStringList>
+#include <QDebug>
+
+static const char* const FILE_NAME = "D:/minesweeperSave";
 
 GameManager::GameManager(QObject *parent) : QObject(parent)
 {
@@ -11,12 +17,20 @@ GameManager::GameManager(QObject *parent) : QObject(parent)
     m_startTime = QTime::currentTime();
     m_timer = new QTimer(this);
 
+    readRecords(easy);
+    readRecords(medium);
+    readRecords(hard);
+
     connect(m_timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
 }
 
 GameManager::~GameManager()
 {
     delete m_timer;
+
+    writeRecords(easy);
+    writeRecords(medium);
+    writeRecords(hard);
 }
 
 void GameManager::connectField(MineField *f)
@@ -81,6 +95,12 @@ void GameManager::newGame(int w, int h, int bombs)
     cellMarked(0);
 }
 
+void GameManager::showRecords()
+{
+    RecordsDialog rd(&m_recordsE, &m_recordsM, &m_recordsH);
+    rd.exec();
+}
+
 void GameManager::cellOpened(int all)
 {
     int fieldSize = m_gameField->width() * m_gameField->height();
@@ -93,6 +113,42 @@ void GameManager::cellOpened(int all)
 
         m_infoPanel->setText("YOU WON!");
         m_gameField->setMessageText("YOU WON!");
+
+        // Проверка на режим игры:
+        // Если не настраиваемый, то отслеживаем рекорды
+        QVector<Record> *records;
+        switch(m_gameLevel) {
+            case easy:
+                records = &m_recordsE;
+            break;
+
+            case medium:
+                records = &m_recordsM;
+            break;
+
+            case hard:
+                records = &m_recordsH;
+            break;
+
+            default:
+                return;
+        }
+
+        // Запись рекорда в список рекордов
+        if(records->empty() || m_gameTime < records->at(0).time()) {
+            bool ok;
+
+            // Запрашиваем у пользователя его имя
+            QString wName = QInputDialog::getText(m_infoPanel, tr("Enter your name:"),
+                                                 tr("Winner:"), QLineEdit::Normal,
+                                                 "Player", &ok);
+            if (ok && !wName.isEmpty()) {
+                records->push_front(Record(m_gameTime, QTime::currentTime(), wName));
+                m_infoPanel->setText("New record!");
+            }
+        }
+
+
     }
 
 }
@@ -136,3 +192,91 @@ QTime GameManager::gameTime()
     int h  = m  / 60;      m  %= 60;
     return QTime(h, m, s, ms);
 }
+
+void GameManager::readRecords(int diff)
+{
+    QVector<Record> *container;
+    QString fileSuffix;
+
+    switch(diff) {
+        case easy:
+            container = &m_recordsE;
+            fileSuffix = "Easy";
+        break;
+
+        case medium:
+            container = &m_recordsM;
+            fileSuffix = "Medium";
+        break;
+
+        case hard:
+            container = &m_recordsH;
+            fileSuffix = "Hard";
+        break;
+    }
+
+    QFile file(FILE_NAME + fileSuffix + ".txt");
+
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream in(&file);
+        in.setCodec("UTF-8");
+        while(!in.atEnd()){
+            QString string = in.readLine();
+            QStringList sl = string.split("||");
+
+            qDebug() << sl.at(0);
+            qDebug() << sl.at(0).toInt();
+
+            int ms = sl.at(0).toInt();
+            int s  = ms / 1000;    ms %= 1000;
+            int m  = s  / 60;      s  %= 60;
+            int h  = m  / 60;      m  %= 60;
+            QTime time(h, m, s, ms);
+
+            Record r(time, QTime(), sl.at(2));
+            container->append(r);
+      }
+       file.close();
+    }
+}
+
+void GameManager::writeRecords(int diff)
+{
+    QVector<Record> *container;
+    QString fileSuffix;
+
+    switch(diff) {
+        case easy:
+            container = &m_recordsE;
+            fileSuffix = "Easy";
+        break;
+
+        case medium:
+            container = &m_recordsM;
+            fileSuffix = "Medium";
+        break;
+
+        case hard:
+            container = &m_recordsH;
+            fileSuffix = "Hard";
+        break;
+    }
+
+    QFile file(FILE_NAME + fileSuffix + ".txt");
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+         {
+             QTextStream writeStream(&file);
+             writeStream.setCodec("UTF-8");
+             for (int i=0, s = container->length(); i < s ; i++)
+             {
+                QString str = container->at(i).compact();
+
+                if(i != s-1)
+                    str += "\n";
+
+                writeStream << str;
+             };
+         };
+    file.close();
+}
+

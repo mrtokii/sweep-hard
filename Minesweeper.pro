@@ -18,17 +18,22 @@ SOURCES += main.cpp\
     minefield.cpp \
     gamemanager.cpp \
     newgamedialog.cpp \
-    qstylesheet.cpp
+    qstylesheet.cpp \
+    record.cpp \
+    recordsdialog.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
     minefield.h \
     gamemanager.h \
     newgamedialog.h \
-    qstylesheet.h
+    qstylesheet.h \
+    record.h \
+    recordsdialog.h
 
 FORMS    += mainwindow.ui \
-    newgamedialog.ui
+    newgamedialog.ui \
+    recordsdialog.ui
 
 RESOURCES += \
     resources.qrc

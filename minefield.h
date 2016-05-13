@@ -36,8 +36,6 @@ private:
     void openCell(int x, int y);
     bool empty(int x, int y);
     bool bomb(int x, int y);
-
-    // Костыль
     bool forceOpen(int x, int y);
 
     QPoint getPositionOffset();

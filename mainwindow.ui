@@ -51,8 +51,8 @@
       <item>
        <widget class="QLabel" name="timerLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-          <horstretch>0</horstretch>
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>2</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
@@ -119,7 +119,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="buttonsLayout" stretch="0,0">
+       <layout class="QHBoxLayout" name="buttonsLayout" stretch="0,0,0">
         <property name="sizeConstraint">
          <enum>QLayout::SetFixedSize</enum>
         </property>
@@ -147,6 +147,22 @@
           </property>
           <property name="text">
            <string>New game</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="recordsButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: white;</string>
+          </property>
+          <property name="text">
+           <string>Records</string>
           </property>
          </widget>
         </item>

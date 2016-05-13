@@ -14,12 +14,10 @@ void MineField::placeBombs(int amount, int startX, int startY)
         int randomY = qrand() % m_height;
         int randomX = qrand() % m_width;
 
-
-        // Проверка на то, чтобы рядом со стартовой позицией
-        // не было бомб
+        // Проверка на то, чтобы рядом со
+        // стартовой позицией не было бомб
         bool bombAround = randomX >= startX-1 && randomX <= startX+1
                 && randomY >= startY-1 && randomY <= startY+1;
-
 
         if(!bombAround && !m_field[randomY][randomX].isBomb())
         {
@@ -59,7 +57,6 @@ void MineField::openCell(int x, int y)
         Cell &current = m_field[y][x];
 
         // Проверка на то, стоит ли ее открывать     
-
         if(!current.opened() && !current.isBomb()) {
 
             // Безопасно удаляем флажок, если он стоит на клетке

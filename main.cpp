@@ -10,17 +10,14 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QStyleSheet mainStyle("://styles/app.css");
-
-    a.setStyleSheet(mainStyle.style());
+    //QStyleSheet mainStyle("://styles/app.css");
+    //a.setStyleSheet(mainStyle.style());
 
     MainWindow w;
     w.show();
 
     QLabel *timer = new QLabel("timer");
-    //timer->show();
     QLabel *info = new QLabel("info");
-    //info->show();
 
     MineField* mf = new MineField();
     GameManager *gm = new GameManager();

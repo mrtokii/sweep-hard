@@ -13,13 +13,11 @@ public:
     explicit QStyleSheet(QObject *parent = 0);
 
     bool loadFromFile(QString path);
-    void addVariable(QString var, QString value);
     QString style();
 
 
 private:
     QString m_styleSheet;
-    QMap<QString, QString> m_replacements;
 
 };
 
