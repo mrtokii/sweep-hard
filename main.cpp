@@ -10,10 +10,11 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //QStyleSheet mainStyle("://styles/app.css");
-    //a.setStyleSheet(mainStyle.style());
+    QStyleSheet mainStyle("://styles/app.css");
+
 
     MainWindow w;
+    w.setStyleSheet(mainStyle.style());
     w.show();
 
     QLabel *timer = new QLabel("timer");

@@ -27,6 +27,10 @@ public:
 private slots:
     void on_closeButton_clicked();
 
+    void on_clearRecordsButton_clicked();
+
+    void on_tabWidget_tabBarClicked(int index);
+
 private:
     Ui::RecordsDialog *ui;
 };

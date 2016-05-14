@@ -1,6 +1,8 @@
 #include "recordsdialog.h"
 #include "ui_recordsdialog.h"
 
+#include <QMessageBox>
+
 void RecordsDialog::createTable(QVector<Record> *source, QTableWidget *dest)
 {
     for (int i = 0, s = source->size(); i < s; ++i) {
@@ -32,15 +34,6 @@ RecordsDialog::RecordsDialog(QVector<Record>* ee,
     createTable(e, ui->easyTable);
     createTable(m, ui->mediumTable);
     createTable(h, ui->hardTable);
-
-    /*for (int i = 0, s = e->size(); i < s; ++i) {
-        ui->easyTable->setRowCount(ui->easyTable->rowCount() + 1);
-        QTableWidgetItem *time = new QTableWidgetItem(e->at(i).time().toString("mm:ss"));
-        QTableWidgetItem *who = new QTableWidgetItem(e->at(i).who());
-
-        ui->easyTable->setItem(i, 0, time);
-        ui->easyTable->setItem(i, 1, who);
-    }*/
 }
 
 RecordsDialog::~RecordsDialog()
@@ -51,4 +44,31 @@ RecordsDialog::~RecordsDialog()
 void RecordsDialog::on_closeButton_clicked()
 {
     reject();
+}
+
+void RecordsDialog::on_clearRecordsButton_clicked()
+{
+    int diff = ui->tabWidget->currentIndex();
+    QVector<Record> *container;
+
+    switch(diff) {
+        case 0:
+            container = e;
+        break;
+
+        case 1:
+            container = m;
+        break;
+
+        case 2:
+            container = h;
+    }
+
+    container->clear();
+    accept();
+}
+
+void RecordsDialog::on_tabWidget_tabBarClicked(int index)
+{
+    ui->clearRecordsButton->setText("Clear " + ui->tabWidget->tabText(index));
 }
