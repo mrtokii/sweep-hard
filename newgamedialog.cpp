@@ -9,8 +9,6 @@ NewGameDialog::NewGameDialog(GameManager *gm, QWidget *parent) :
     ui(new Ui::NewGameDialog)
 {
     ui->setupUi(this);
-    QStyleSheet mainStyle("://styles/app.css");
-    //this->setStyleSheet(mainStyle.style());
     m_gm = gm;
 }
 

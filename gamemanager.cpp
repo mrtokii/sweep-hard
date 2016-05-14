@@ -139,11 +139,13 @@ void GameManager::cellOpened(int all)
             bool ok;
 
             // Запрашиваем у пользователя его имя
-            QString wName = QInputDialog::getText(m_infoPanel, tr("Enter your name:"),
+            QWidget *w;
+
+            QString wName = QInputDialog::getText(w, tr("Enter your name:"),
                                                  tr("Winner:"), QLineEdit::Normal,
                                                  "Player", &ok);
             if (ok && !wName.isEmpty()) {
-                records->push_front(Record(m_gameTime, QTime::currentTime(), wName));
+                records->push_front(Record(m_gameTime, wName));
                 m_infoPanel->setText("New record!");
             }
         }
@@ -224,16 +226,13 @@ void GameManager::readRecords(int diff)
             QString string = in.readLine();
             QStringList sl = string.split("||");
 
-            qDebug() << sl.at(0);
-            qDebug() << sl.at(0).toInt();
-
             int ms = sl.at(0).toInt();
             int s  = ms / 1000;    ms %= 1000;
             int m  = s  / 60;      s  %= 60;
             int h  = m  / 60;      m  %= 60;
             QTime time(h, m, s, ms);
 
-            Record r(time, QTime(), sl.at(2));
+            Record r(time, sl.at(1));
             container->append(r);
       }
        file.close();
