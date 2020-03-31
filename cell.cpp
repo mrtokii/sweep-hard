@@ -11,8 +11,14 @@ QPixmap Cell::draw()
     QPixmap pic(50, 50);
     QPainter painter(&pic);
 
+    QRect rectangle = QRect(0, 0, 50, 50);
+
     // Base color
-    painter.fillRect(0, 0, 50, 50, Qt::red);
+    painter.fillRect(rectangle, Qt::red);
+
+    QFont font = painter.font();
+    font.setPixelSize(28);
+    painter.setFont(font);
 
     switch(m_state) {
         case cellNotOpened:
@@ -22,9 +28,8 @@ QPixmap Cell::draw()
         case cellOpened:
             painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/OpenedCell.png"));
 
-            if(contents() != 0) {
-                painter.drawPixmap(0, 0, 50, 50, QPixmap("://images/Numbers/" + QString::number(contents()) + ".png"));
-            }
+            if(contents() != 0)
+                painter.drawText(rectangle, Qt::AlignCenter, QString::number(contents()));
         break;
 
         case cellMarked:

@@ -27,7 +27,7 @@ public:
     explicit Cell(int size);
 
     bool opened() { return this->m_state == cellOpened; }
-    bool isBomb() { return this->m_contents == 9; }
+    bool isBomb() { return this->m_contents == 27; }
     bool empty() { return this->m_contents == 0; }
     bool marked() { return this->m_state == cellMarked; }
 
