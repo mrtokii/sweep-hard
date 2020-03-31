@@ -14,10 +14,14 @@ class MineField : public QWidget
     Q_OBJECT
 
 private:
-    QVector< QVector< Cell > > m_field;
+    QVector<QVector<QVector<Cell>>> m_field;
 
     int m_width;
     int m_height;
+    int m_depth;
+
+    int m_currentDepth;
+
     int m_bombs;
     int m_cellSize;
     bool m_frozen;
@@ -31,12 +35,12 @@ private:
     int m_markedCells;
 
     void countNumbers();
-    void placeBombs(int amount, int startX, int startY);
+    void placeBombs(int amount, int startX, int startY, int startZ);
     void createField();
-    void openCell(int x, int y);
-    bool empty(int x, int y);
-    bool bomb(int x, int y);
-    bool forceOpen(int x, int y);
+    void openCell(int x, int y, int z);
+    bool empty(int x, int y, int z);
+    bool bomb(int x, int y,int z);
+    bool forceOpen(int x, int y, int z);
 
     QPoint getPositionOffset();
 
@@ -45,8 +49,8 @@ public:
 
     bool m_highlight;
 
-    void generateField(int startX, int startY);
-    void setProperties(int height, int width, int bombs);
+    void generateField(int startX, int startY, int startZ);
+    void setProperties(int height, int width, int depth, int bombs);
     void setCellSize(int s);
     void showBombs();
 
@@ -58,6 +62,11 @@ public:
     int bombs() { return m_bombs; }
     int width() { return m_width; }
     int height() { return m_height; }
+    int depth() { return m_depth; }
+
+    int currentDepth() { return m_currentDepth; }
+
+    void setCurrentDepth(int newValue) { m_currentDepth = newValue; }
 
     void setMessageText(QString message) { m_messageText = message; }
     void clearMessageText() { m_messageText = ""; }

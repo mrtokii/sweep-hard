@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <QTime>
 
-void MineField::placeBombs(int amount, int startX, int startY)
+void MineField::placeBombs(int amount, int startX, int startY, int startZ)
 {
     // Разбуриваем генератор случайных чисел
     QTime midnight(0,0,0);
@@ -13,16 +13,18 @@ void MineField::placeBombs(int amount, int startX, int startY)
         // Генерируем случайные координаты
         int randomY = qrand() % m_height;
         int randomX = qrand() % m_width;
+        int randomZ = qrand() % m_depth;
 
         // Проверка на то, чтобы рядом со
         // стартовой позицией не было бомб
-        bool bombAround = randomX >= startX-1 && randomX <= startX+1
-                && randomY >= startY-1 && randomY <= startY+1;
+        bool bombAround =   randomX >= startX-1 && randomX <= startX+1
+                         && randomY >= startY-1 && randomY <= startY+1
+                         && randomZ >= startZ-1 && randomZ <= startZ+1;
 
-        if(!bombAround && !m_field[randomY][randomX].isBomb())
+        if(!bombAround && !m_field[randomZ][randomY][randomX].isBomb())
         {
             // Размещаем бомбу
-            m_field[randomY][randomX].setContents(9);
+            m_field[randomZ][randomY][randomX].setContents(27);
             i++;
         }
 
@@ -31,12 +33,15 @@ void MineField::placeBombs(int amount, int startX, int startY)
 
 void MineField::createField()
 {
-    // Создаем массив клеток...
-    m_field = QVector< QVector< Cell > >(m_height);
+    m_field = QVector<QVector<QVector<Cell>>>(m_depth);
 
-    // ...и заполняем пустыми клетками
-    for(int i = 0; i < m_height; i++) {
-        m_field[i] = QVector< Cell >(m_width);
+    for(int i = 0; i < m_depth; i++) {
+
+        m_field[i] = QVector<QVector<Cell>>(m_height);
+
+        for(int j = 0; j < m_height; j++) {
+            m_field[i][j] = QVector<Cell>(m_width);
+        }
     }
 
     m_openedCells = 0;
@@ -48,70 +53,81 @@ void MineField::createField()
     update();
 }
 
-void MineField::openCell(int x, int y)
+void MineField::openCell(int x, int y, int z)
 {
-    // Проверка на попадание в поле
-    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height && z >= 0 && z < m_depth) {
 
-        // Ссылка на текущую клетку
-        Cell &current = m_field[y][x];
+        Cell &current = m_field[z][y][x];
 
-        // Проверка на то, стоит ли ее открывать     
         if(!current.opened() && !current.isBomb()) {
 
-            // Безопасно удаляем флажок, если он стоит на клетке
             if(current.marked())
                 emit cellMarked(--m_markedCells);
 
-            // Открываем клетку и сигналим всем об этом
             current.open();
             emit cellOpened(++m_openedCells);
 
             // Если клетка пустая, открываем все соседние клетки
-            if(empty(x, y)) {
-                openCell(x - 1, y - 1);
-                openCell(x, y - 1);
-                openCell(x + 1, y - 1);
-                openCell(x - 1, y);
-                openCell(x + 1, y);
-                openCell(x - 1, y + 1);
-                openCell(x, y + 1);
-                openCell(x + 1, y + 1);
+            if(empty(x, y, z)) {
+
+                for(int i = -1; i <= 1; ++i) {
+                    openCell(x - 1, y - 1, z + i);
+                    openCell(x, y - 1, z + i);
+                    openCell(x + 1, y - 1, z + i);
+                    openCell(x - 1, y, z + i);
+                    openCell(x + 1, y, z + i);
+                    openCell(x - 1, y + 1, z + i);
+                    openCell(x, y + 1, z + i);
+                    openCell(x + 1, y + 1, z + i);
+                }
+
+                openCell(x, y, z - 1);
+                openCell(x, y, z + 1);
 
             // Если не пустая, открываем пустые рядом
             } else {
-                if(empty(x - 1, y - 1)) // 7
-                    openCell(x - 1, y - 1);
 
-                if(empty(x, y - 1)) // 8
-                    openCell(x, y - 1);
+                for(int i = -1; i <= 1; ++i) {
 
-                if(empty(x + 1, y - 1)) // 9
-                    openCell(x + 1, y - 1);
+                    if(empty(x - 1, y - 1, z + i))
+                        openCell(x - 1, y - 1, z + i);
 
-                if(empty(x - 1, y)) // 4
-                    openCell(x - 1, y);
+                    if(empty(x, y - 1, z + i))
+                        openCell(x, y - 1, z + i);
 
-                if(empty(x + 1, y)) // 6
-                    openCell(x + 1, y);
+                    if(empty(x + 1, y - 1, z + i))
+                        openCell(x + 1, y - 1, z + i);
 
-                if(empty(x - 1, y + 1)) // 1
-                    openCell(x - 1, y + 1);
+                    if(empty(x - 1, y, z + i))
+                        openCell(x - 1, y, z + i);
 
-                if(empty(x, y + 1)) // 2
-                    openCell(x, y + 1);
+                    if(empty(x + 1, y, z + i))
+                        openCell(x + 1, y, z + i);
 
-                if(empty(x + 1, y + 1)) // 3
-                    openCell(x + 1, y + 1);
+                    if(empty(x - 1, y + 1, z + i))
+                        openCell(x - 1, y + 1, z + i);
+
+                    if(empty(x, y + 1, z + i))
+                        openCell(x, y + 1, z + i);
+
+                    if(empty(x + 1, y + 1, z + i))
+                        openCell(x + 1, y + 1, z + i);
+                }
+
+                if(empty(x, y, z - 1))
+                    openCell(x, y, z - 1);
+
+                if(empty(x, y, z + 1))
+                    openCell(x, y, z + 1);
             }
         }
     }
 }
 
-bool MineField::empty(int x, int y)
+bool MineField::empty(int x, int y, int z)
 {
-    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
-        if(m_field[y][x].empty())
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height && z >= 0 && z < m_depth) {
+        if(m_field[z][y][x].empty())
             return true;
         else
             return false;
@@ -120,10 +136,10 @@ bool MineField::empty(int x, int y)
     return false;
 }
 
-bool MineField::bomb(int x, int y)
+bool MineField::bomb(int x, int y, int z)
 {
-    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
-        if(m_field[y][x].isBomb())
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height && z >= 0 && z < m_depth) {
+        if(m_field[z][y][x].isBomb())
             return true;
         else
             return false;
@@ -132,14 +148,14 @@ bool MineField::bomb(int x, int y)
     return false;
 }
 
-bool MineField::forceOpen(int x, int y)
+bool MineField::forceOpen(int x, int y, int z)
 {
-    if(x >= 0 && x < m_width && y >= 0 && y < m_height) {
-        if(m_field[y][x].marked() || m_field[y][x].opened())
+    if(x >= 0 && x < m_width && y >= 0 && y < m_height && z >= 0 && z < m_depth) {
+        if(m_field[z][y][x].marked() || m_field[z][y][x].opened())
             return false;
 
-        openCell(x, y);
-        if(m_field[y][x].isBomb())
+        openCell(x, y, z);
+        if(m_field[z][y][x].isBomb())
             return true;
     }
 
@@ -159,36 +175,91 @@ QPoint MineField::getPositionOffset()
 // Подсчет количества мин рядом с каждой клеткой
 void MineField::countNumbers()
 {
-    for(int i = 0; i < m_height; i++) {
-        for(int j = 0; j < m_width; j++) {
+    for(int k = 0; k < m_depth; k++) {
+        for(int i = 0; i < m_height; i++) {
+            for(int j = 0; j < m_width; j++) {
 
-            if(!m_field[i][j].isBomb()) {
-                if(i > 0 && j > 0 && m_field[i-1][j-1].isBomb()) // 7
-                    m_field[i][j].increment();
+                if(!m_field[k][i][j].isBomb()) {
 
-                if(i > 0 && m_field[i-1][j].isBomb()) // 8
-                    m_field[i][j].increment();
+                    // Top
 
-                if(i > 0 && j < m_width-1 && m_field[i-1][j+1].isBomb()) // 9
-                    m_field[i][j].increment();
+                    if(k > 0 && i > 0 && j > 0 && m_field[k-1][i-1][j-1].isBomb())
+                        m_field[k][i][j].increment();
 
-                if(j > 0 && m_field[i][j-1].isBomb()) // 4
-                    m_field[i][j].increment();
+                    if(k > 0 && i > 0 && m_field[k-1][i-1][j].isBomb())
+                        m_field[k][i][j].increment();
 
-                if(j < m_width-1 && m_field[i][j+1].isBomb()) // 6
-                    m_field[i][j].increment();
+                    if(k > 0 && i > 0 && j < m_width-1 && m_field[k-1][i-1][j+1].isBomb())
+                        m_field[k][i][j].increment();
 
-                if(i < m_height-1 && j > 0 && m_field[i+1][j-1].isBomb()) // 1
-                    m_field[i][j].increment();
+                    if(k > 0 && j > 0 && m_field[k-1][i][j-1].isBomb())
+                        m_field[k][i][j].increment();
 
-                if(i < m_height-1 && m_field[i+1][j].isBomb()) // 2
-                    m_field[i][j].increment();
+                    if(k > 0 && j < m_width-1 && m_field[k-1][i][j+1].isBomb())
+                        m_field[k][i][j].increment();
 
-                if(i < m_height-1 && j < m_width-1 && m_field[i+1][j+1].isBomb()) // 3
-                    m_field[i][j].increment();
+                    if(k > 0 && i < m_height-1 && j > 0 && m_field[k-1][i+1][j-1].isBomb())
+                        m_field[k][i][j].increment();
 
+                    if(k > 0 && i < m_height-1 && m_field[k-1][i+1][j].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k > 0 && i < m_height-1 && j < m_width-1 && m_field[k-1][i+1][j+1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    // Center
+
+                    if(i > 0 && j > 0 && m_field[k][i-1][j-1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(i > 0 && m_field[k][i-1][j].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(i > 0 && j < m_width-1 && m_field[k][i-1][j+1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(j > 0 && m_field[k][i][j-1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(j < m_width-1 && m_field[k][i][j+1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(i < m_height-1 && j > 0 && m_field[k][i+1][j-1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(i < m_height-1 && m_field[k][i+1][j].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(i < m_height-1 && j < m_width-1 && m_field[k][i+1][j+1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    // Bottom
+
+                    if(k < m_depth-1 && i > 0 && j > 0 && m_field[k+1][i-1][j-1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && i > 0 && m_field[k+1][i-1][j].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && i > 0 && j < m_width-1 && m_field[k+1][i-1][j+1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && j > 0 && m_field[k+1][i][j-1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && j < m_width-1 && m_field[k+1][i][j+1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && i < m_height-1 && j > 0 && m_field[k+1][i+1][j-1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && i < m_height-1 && m_field[k+1][i+1][j].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && i < m_height-1 && j < m_width-1 && m_field[k+1][i+1][j+1].isBomb())
+                        m_field[k][i][j].increment();
+                }
             }
-
         }
     }
 }
@@ -197,7 +268,10 @@ MineField::MineField(QWidget *parent) : QWidget(parent)
 {
     m_height = 1;
     m_width = 1;
+    m_depth = 1;
     m_bombs = 1;
+
+    m_currentDepth = 0;
 
     m_highlight = false;
 
@@ -205,23 +279,24 @@ MineField::MineField(QWidget *parent) : QWidget(parent)
     m_highlightY = -1;
 
     setCellSize(50);
-    setProperties(9, 9, 10);
+    setProperties(9, 9, 9, 10);
     clearMessageText();
 
     setMouseTracking(true);
 }
 
-void MineField::generateField(int startX, int startY)
+void MineField::generateField(int startX, int startY, int startZ)
 {   
-    placeBombs(m_bombs, startX, startY);
+    placeBombs(m_bombs, startX, startY, startZ);
     countNumbers();
 }
 
-void MineField::setProperties(int height, int width, int bombs)
+void MineField::setProperties(int height, int width, int depth, int bombs)
 {
-    if(bombs < width * height - 8) {
+    if(bombs < width * height * depth - 8) {
         m_width = width;
         m_height = height;
+        m_depth = depth;
         m_bombs = bombs;
 
         createField();
@@ -235,14 +310,15 @@ void MineField::setCellSize(int s)
 
 void MineField::showBombs()
 {
-    // Ссылка на текущую клетку
     Cell *current;
 
-    for(int i = 0; i < m_height; i++) {
-        for(int j = 0; j < m_width; j++) {
-            current = &m_field[i][j];
-            if(current->isBomb())
-                current->showBomb();
+    for(int k = 0; k < m_depth; k++) {
+        for(int i = 0; i < m_height; i++) {
+            for(int j = 0; j < m_width; j++) {
+                current = &m_field[k][i][j];
+                if(current->isBomb())
+                    current->showBomb();
+            }
         }
     }
 }
@@ -260,7 +336,6 @@ void MineField::paintEvent(QPaintEvent *e) {
     else
         setCellSize( size().width() / m_width );
 
-    // Начинаем рисовать!
     QPainter painter(this);
     painter.fillRect(QRect(0, 0, size().width(), size().height()), QColor(43, 43, 43));
 
@@ -270,7 +345,7 @@ void MineField::paintEvent(QPaintEvent *e) {
 
     for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {
-            painter.drawPixmap(j * m_cellSize, i * m_cellSize, m_cellSize, m_cellSize, m_field[i][j].draw());
+            painter.drawPixmap(j * m_cellSize, i * m_cellSize, m_cellSize, m_cellSize, m_field[m_currentDepth][i][j].draw());
         }
     }
 
@@ -312,28 +387,54 @@ void MineField::mousePressEvent(QMouseEvent *event)
     newCoords.setX( (event->pos() - getPositionOffset()).x() / m_cellSize);
     newCoords.setY( (event->pos() - getPositionOffset()).y() / m_cellSize);
 
-    // Ссылка на выбранную ячейку
-    Cell &selected = m_field[newCoords.y()][newCoords.x()];
+    Cell &selected = m_field[m_currentDepth][newCoords.y()][newCoords.x()];
 
     // При нажатии ЛКМ
     if (event->button() == Qt::LeftButton && !selected.marked()) {
 
         // Начало игры, если ни одной ячейки еще не открыто
         if(!m_openedCells) {
-            generateField(newCoords.x(), newCoords.y());
+            generateField(newCoords.x(), newCoords.y(), m_currentDepth);
             emit gameStarted();
         }
 
         if(selected.opened()) {
             bool fail =
-                   forceOpen(newCoords.x() - 1, newCoords.y() - 1) ||
-                   forceOpen(newCoords.x(), newCoords.y() - 1) ||
-                   forceOpen(newCoords.x() + 1, newCoords.y() - 1) ||
-                   forceOpen(newCoords.x() - 1, newCoords.y()) ||
-                   forceOpen(newCoords.x() + 1, newCoords.y()) ||
-                   forceOpen(newCoords.x() - 1, newCoords.y() + 1) ||
-                   forceOpen(newCoords.x(), newCoords.y() + 1) ||
-                   forceOpen(newCoords.x() + 1, newCoords.y() + 1);
+
+                    // Top
+
+                    forceOpen(newCoords.x() - 1, newCoords.y() - 1, m_currentDepth - 1) ||
+                    forceOpen(newCoords.x(), newCoords.y() - 1, m_currentDepth - 1) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y() - 1, m_currentDepth - 1) ||
+                    forceOpen(newCoords.x() - 1, newCoords.y(), m_currentDepth - 1) ||
+                    forceOpen(newCoords.x(), newCoords.y(), m_currentDepth - 1) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y(), m_currentDepth - 1) ||
+                    forceOpen(newCoords.x() - 1, newCoords.y() + 1, m_currentDepth - 1) ||
+                    forceOpen(newCoords.x(), newCoords.y() + 1, m_currentDepth - 1) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y() + 1, m_currentDepth - 1) ||
+
+                    // Center
+
+                    forceOpen(newCoords.x() - 1, newCoords.y() - 1, m_currentDepth) ||
+                    forceOpen(newCoords.x(), newCoords.y() - 1, m_currentDepth) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y() - 1, m_currentDepth) ||
+                    forceOpen(newCoords.x() - 1, newCoords.y(), m_currentDepth) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y(), m_currentDepth) ||
+                    forceOpen(newCoords.x() - 1, newCoords.y() + 1, m_currentDepth) ||
+                    forceOpen(newCoords.x(), newCoords.y() + 1, m_currentDepth) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y() + 1, m_currentDepth) ||
+
+                    // Bottom
+
+                    forceOpen(newCoords.x() - 1, newCoords.y() - 1, m_currentDepth + 1) ||
+                    forceOpen(newCoords.x(), newCoords.y() - 1, m_currentDepth + 1) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y() - 1, m_currentDepth + 1) ||
+                    forceOpen(newCoords.x() - 1, newCoords.y(), m_currentDepth + 1) ||
+                    forceOpen(newCoords.x(), newCoords.y(), m_currentDepth + 1) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y(), m_currentDepth + 1) ||
+                    forceOpen(newCoords.x() - 1, newCoords.y() + 1, m_currentDepth + 1) ||
+                    forceOpen(newCoords.x(), newCoords.y() + 1, m_currentDepth + 1) ||
+                    forceOpen(newCoords.x() + 1, newCoords.y() + 1, m_currentDepth + 1);
 
             if(fail) {
                 freeze(true);
@@ -346,7 +447,7 @@ void MineField::mousePressEvent(QMouseEvent *event)
             freeze(true);
             emit gameFailed();
         } else {
-            openCell(newCoords.x(), newCoords.y());
+            openCell(newCoords.x(), newCoords.y(), m_currentDepth);
         }
     }
 
