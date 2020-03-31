@@ -69,15 +69,15 @@ void GameManager::newGame(int level)
 
     switch(level) {
         case easy:
-            m_gameField->setProperties(9, 9, 10);
+            m_gameField->setProperties(9, 9, 3, 20);
         break;
 
         case medium:
-            m_gameField->setProperties(16, 16, 40);
+            m_gameField->setProperties(16, 16, 3, 80);
         break;
 
         case hard:
-            m_gameField->setProperties(16, 30, 99);
+            m_gameField->setProperties(16, 30, 3, 199);
         break;
     }
 
@@ -90,7 +90,7 @@ void GameManager::newGame(int w, int h, int bombs)
 
     m_gameField->clearMessageText();
     m_gameLevel = custom;
-    m_gameField->setProperties(h, w, bombs);
+    m_gameField->setProperties(h, w, 9, bombs);
 
     cellMarked(0);
 }
@@ -103,7 +103,7 @@ void GameManager::showRecords()
 
 void GameManager::cellOpened(int all)
 {
-    int fieldSize = m_gameField->width() * m_gameField->height();
+    int fieldSize = m_gameField->width() * m_gameField->height() * m_gameField->depth();
 
     // Игра закончилась победой
     if(fieldSize - all == m_gameField->bombs()) {
@@ -138,7 +138,9 @@ void GameManager::cellOpened(int all)
         if(records->empty() || m_gameTime < records->at(0).time()) {
             bool ok;
 
-            // Запрашиваем у пользователя его имя
+            // Fix later
+
+            /*
             QWidget *w;
 
             QString wName = QInputDialog::getText(w, tr("Enter your name:"),
@@ -148,6 +150,7 @@ void GameManager::cellOpened(int all)
                 records->push_front(Record(m_gameTime, wName));
                 m_infoPanel->setText("New record!");
             }
+            */
         }
 
 

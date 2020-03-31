@@ -66,7 +66,7 @@ public:
 
     int currentDepth() { return m_currentDepth; }
 
-    void setCurrentDepth(int newValue) { m_currentDepth = newValue; }
+    void setCurrentDepth(int newValue);
 
     void setMessageText(QString message) { m_messageText = message; }
     void clearMessageText() { m_messageText = ""; }

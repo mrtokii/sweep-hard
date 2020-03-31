@@ -31,9 +31,14 @@ private slots:
 
     void on_recordsButton_clicked();
 
+    void updateHud();
+
 private:
     Ui::MainWindow *ui;
     MineField *m_field;
+
+protected:
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 };
 
 #endif // MAINWINDOW_H

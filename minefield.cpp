@@ -5,7 +5,6 @@
 
 void MineField::placeBombs(int amount, int startX, int startY, int startZ)
 {
-    // Разбуриваем генератор случайных чисел
     QTime midnight(0,0,0);
     qsrand(midnight.secsTo(QTime::currentTime()));
 
@@ -195,6 +194,9 @@ void MineField::countNumbers()
                     if(k > 0 && j > 0 && m_field[k-1][i][j-1].isBomb())
                         m_field[k][i][j].increment();
 
+                    if(k > 0 && m_field[k-1][i][j].isBomb())
+                        m_field[k][i][j].increment();
+
                     if(k > 0 && j < m_width-1 && m_field[k-1][i][j+1].isBomb())
                         m_field[k][i][j].increment();
 
@@ -245,6 +247,9 @@ void MineField::countNumbers()
                         m_field[k][i][j].increment();
 
                     if(k < m_depth-1 && j > 0 && m_field[k+1][i][j-1].isBomb())
+                        m_field[k][i][j].increment();
+
+                    if(k < m_depth-1 && m_field[k+1][i][j].isBomb())
                         m_field[k][i][j].increment();
 
                     if(k < m_depth-1 && j < m_width-1 && m_field[k+1][i][j+1].isBomb())
@@ -323,6 +328,13 @@ void MineField::showBombs()
     }
 }
 
+void MineField::setCurrentDepth(int newValue) {
+
+    m_currentDepth = newValue;
+
+    update();
+}
+
 void MineField::paintEvent(QPaintEvent *e) {
 
     // Определяем размер клеток исходя из размера виджета
@@ -341,11 +353,9 @@ void MineField::paintEvent(QPaintEvent *e) {
 
     painter.translate(getPositionOffset());
 
-
-
     for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {
-            painter.drawPixmap(j * m_cellSize, i * m_cellSize, m_cellSize, m_cellSize, m_field[m_currentDepth][i][j].draw());
+            painter.drawPixmap(j * m_cellSize, i * m_cellSize, m_cellSize, m_cellSize, m_field[currentDepth()][i][j].draw());
         }
     }
 
@@ -369,7 +379,6 @@ void MineField::paintEvent(QPaintEvent *e) {
         painter.fillRect(r, QColor(43, 43, 43));
         painter.drawText(0, 0, m_messageText);
     }
-
 }
 
 void MineField::mousePressEvent(QMouseEvent *event)
@@ -483,9 +492,6 @@ void MineField::mouseMoveEvent(QMouseEvent *event) {
         m_highlightY = (event->pos() - getPositionOffset()).y() / m_cellSize;
         update();
     }
-
-
-
 }
 
 
